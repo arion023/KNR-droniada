@@ -1,0 +1,332 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/Floor.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/Grass.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/pipes/protos/PipeSection.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/manhole/protos/SquareManhole.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/dji/mavic/protos/Mavic2Pro.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.01039738809389498 0.010504711514891713 0.9998907667124514 1.5609084176873995
+  position -1.392751979980002 -31.012009769816224 3.2379159936493846
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+Floor {
+  size 1000 1000
+  appearance Grass {
+  }
+}
+Mavic2Pro {
+  hidden position_0_0 5.532068608733724e-09
+  hidden linearVelocity_0 5.082096769561384e-06 -4.949802503755814e-08 0.0001287038467893767
+  hidden angularVelocity_0 2.987853695291404e-06 0.00027152013618081107 -2.4509757441983583e-07
+  hidden position_5_0 -2.5434347410424607e-05
+  hidden linearVelocity_5 1.3253119294975489e-05 -1.701216832058885e-07 9.475908009896364e-05
+  hidden angularVelocity_5 2.9839495642690297e-06 0.0002715201294168243 -1.8933646862357615e-07
+  hidden rotation_6 0 -0.9999999999999999 0 2.5434339782579857e-05
+  hidden position_6_0 -3.3117901576673603e-07
+  hidden linearVelocity_6 1.1877560703498088e-05 -1.5500907136638606e-07 9.514213109196236e-05
+  hidden angularVelocity_6 2.9787089901272567e-06 0.0002544037213285075 -1.8949284334855043e-07
+  hidden rotation_7 -1 0 0 3.305237444165179e-07
+  hidden linearVelocity_7 9.690321016138372e-06 -1.2966533199572622e-07 9.478891263707331e-05
+  hidden angularVelocity_7 2.9776075894966273e-06 0.00025440372145102115 -1.8956943086065199e-07
+  translation -6.525117910707175 -6.559996439524974 0.11565760429095759
+  rotation -2.3967173024476683e-05 -0.9999903934777539 -0.004383192647121073 0.06989567957868968
+}
+SquareManhole {
+  translation -6.5 -6.5 0
+  name "drone takeoff(1)"
+  size 0.5 0.5 0.1
+}
+PipeSection {
+  translation 0 20 0.3
+  radius 0.2
+  subdivision 20
+  appearance PBRAppearance {
+    baseColor 0 0 1
+    roughness 1
+    metalness 0
+  }
+}
+SquareManhole {
+  translation -6.5 -5.5 -1.11022e-16
+  name "robot parking"
+  size 0.5 0.5 0.1
+}
+Solid {
+  translation -4 4 0.02982248243946168
+  children [
+    Transform {
+      translation -0.035 -0.035 -0.035
+      scale 0.001 0.001 0.001
+      children [
+        DEF tennis_ball Shape {
+          appearance PBRAppearance {
+            baseColor 1 1 0
+            roughness 1
+            metalness 0
+          }
+          geometry Mesh {
+            url [
+              "../resources/tennis_ball.obj"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+  name "ball"
+  boundingObject Sphere {
+    radius 0.03
+  }
+  physics Physics {
+  }
+  linearVelocity 0 0 -1.3537131807794677e-10
+}
+Solid {
+  translation 0 4 0.02982249199075432
+  children [
+    Transform {
+      translation -0.035 -0.035 -0.035
+      scale 0.001 0.001 0.001
+      children [
+        DEF tennis_ball Shape {
+          appearance PBRAppearance {
+            baseColor 1 1 0
+            roughness 1
+            metalness 0
+          }
+          geometry Mesh {
+            url [
+              "../resources/tennis_ball.obj"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+  name "ball(1)"
+  boundingObject Sphere {
+    radius 0.03
+  }
+  physics Physics {
+  }
+  linearVelocity 0 0 -7.483744229598755e-08
+}
+Solid {
+  translation 4 4 0.02982249199075432
+  children [
+    Transform {
+      translation -0.035 -0.035 -0.035
+      scale 0.001 0.001 0.001
+      children [
+        DEF tennis_ball Shape {
+          appearance PBRAppearance {
+            baseColor 1 1 0
+            roughness 1
+            metalness 0
+          }
+          geometry Mesh {
+            url [
+              "../resources/tennis_ball.obj"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+  name "ball(2)"
+  boundingObject Sphere {
+    radius 0.03
+  }
+  physics Physics {
+  }
+  linearVelocity 0 0 -7.483744229598755e-08
+}
+Solid {
+  translation -4 0 0.02982249199075432
+  children [
+    Transform {
+      translation -0.035 -0.035 -0.035
+      scale 0.001 0.001 0.001
+      children [
+        DEF tennis_ball Shape {
+          appearance PBRAppearance {
+            baseColor 1 1 0
+            roughness 1
+            metalness 0
+          }
+          geometry Mesh {
+            url [
+              "../resources/tennis_ball.obj"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+  name "ball(3)"
+  boundingObject Sphere {
+    radius 0.03
+  }
+  physics Physics {
+  }
+  linearVelocity 0 0 -7.483744229598755e-08
+}
+Solid {
+  translation 0 0 0.029822492014676436
+  children [
+    Transform {
+      translation -0.035 -0.035 -0.035
+      scale 0.001 0.001 0.001
+      children [
+        DEF tennis_ball Shape {
+          appearance PBRAppearance {
+            baseColor 1 1 0
+            roughness 1
+            metalness 0
+          }
+          geometry Mesh {
+            url [
+              "../resources/tennis_ball.obj"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+  name "ball(4)"
+  boundingObject Sphere {
+    radius 0.03
+  }
+  physics Physics {
+  }
+  linearVelocity 0 0 -7.50245406475863e-08
+}
+Solid {
+  translation 4 0 0.02982249199075432
+  children [
+    Transform {
+      translation -0.035 -0.035 -0.035
+      scale 0.001 0.001 0.001
+      children [
+        DEF tennis_ball Shape {
+          appearance PBRAppearance {
+            baseColor 1 1 0
+            roughness 1
+            metalness 0
+          }
+          geometry Mesh {
+            url [
+              "../resources/tennis_ball.obj"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+  name "ball(5)"
+  boundingObject Sphere {
+    radius 0.03
+  }
+  physics Physics {
+  }
+  linearVelocity 0 0 -7.483744229598755e-08
+}
+Solid {
+  translation -4 -4 0.02982249199075432
+  children [
+    Transform {
+      translation -0.035 -0.035 -0.035
+      scale 0.001 0.001 0.001
+      children [
+        DEF tennis_ball Shape {
+          appearance PBRAppearance {
+            baseColor 1 1 0
+            roughness 1
+            metalness 0
+          }
+          geometry Mesh {
+            url [
+              "../resources/tennis_ball.obj"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+  name "ball(6)"
+  boundingObject Sphere {
+    radius 0.03
+  }
+  physics Physics {
+  }
+  linearVelocity 0 0 -7.483744229598755e-08
+}
+Solid {
+  translation 0 -4 0.02982249199075432
+  children [
+    Transform {
+      translation -0.035 -0.035 -0.035
+      scale 0.001 0.001 0.001
+      children [
+        DEF tennis_ball Shape {
+          appearance PBRAppearance {
+            baseColor 1 1 0
+            roughness 1
+            metalness 0
+          }
+          geometry Mesh {
+            url [
+              "../resources/tennis_ball.obj"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+  name "ball(7)"
+  boundingObject Sphere {
+    radius 0.03
+  }
+  physics Physics {
+  }
+  linearVelocity 0 0 -7.483744229598755e-08
+}
+Solid {
+  translation 4 -4 0.02982249199075432
+  children [
+    Transform {
+      translation -0.035 -0.035 -0.035
+      scale 0.001 0.001 0.001
+      children [
+        DEF tennis_ball Shape {
+          appearance PBRAppearance {
+            baseColor 1 1 0
+            roughness 1
+            metalness 0
+          }
+          geometry Mesh {
+            url [
+              "../resources/tennis_ball.obj"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+  name "ball(8)"
+  boundingObject Sphere {
+    radius 0.03
+  }
+  physics Physics {
+  }
+  linearVelocity 0 0 -7.483744229598755e-08
+}
