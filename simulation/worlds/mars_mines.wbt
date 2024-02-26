@@ -6,12 +6,24 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/Grass.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/pipes/protos/PipeSection.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/manhole/protos/SquareManhole.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/vehicles/protos/abstract/GenericTireAppearance.proto"
 
 WorldInfo {
+  defaultDamping Damping {
+    linear 0.6
+    angular 0.6
+  }
+  contactProperties [
+    ContactProperties {
+      coulombFriction [
+        10
+      ]
+    }
+  ]
 }
 Viewpoint {
-  orientation -0.016992691592828076 -0.10693959341362749 -0.9941203004631578 0.31716427059485014
-  position -7.951852884048596 -4.835740135919999 0.5139233091041236
+  orientation 0.1515718224877007 -0.0608012927611407 -0.9865744702891571 3.895253629200883
+  position 1.5694150089620673 -1.4310079143142065 1.289103771691561
 }
 TexturedBackground {
 }
@@ -23,8 +35,8 @@ Floor {
   }
 }
 DEF drone Solid {
-  translation -6.488014386613147 -6.525929963329627 0.2492123752485743
-  rotation 0.46148083001409806 0.20130203150695197 -0.864009800662396 0.0003929043713283761
+  translation -6.488014386492875 -6.525929963611639 0.24921237524843506
+  rotation 0.4614808078755818 0.201301987687028 -0.8640098226963351 0.0003929043622685287
   children [
     Transform {
       translation -0.28 -0.28 -0.22
@@ -54,8 +66,6 @@ DEF drone Solid {
       angular 0.6
     }
   }
-  linearVelocity 3.6647225649830352e-09 -8.650379303124276e-09 -1.3631184145969996e-11
-  angularVelocity 6.514612934860981e-11 -5.062306980459135e-10 -2.522544887780392e-11
 }
 SquareManhole {
   translation -6.5 -6.5 0
@@ -195,7 +205,7 @@ Solid {
 }
 Solid {
   translation -2.0769465364417286e-16 -0.0003516306984445791 0.029822482422153313
-  rotation 1 -2.159184035052787e-13 -3.947300395263235e-15 0.0295770915632373
+  rotation 0.9999999999999999 -2.159184035052787e-13 -3.947300395263234e-15 0.029577091563237307
   children [
     Transform {
       translation -0.035 -0.035 -0.035
@@ -222,7 +232,6 @@ Solid {
   }
   physics Physics {
   }
-  linearVelocity 0 0 -2.711709361697228e-31
 }
 Solid {
   translation 4 0 0.029822482422153317
@@ -341,87 +350,267 @@ Solid {
   }
 }
 Robot {
-  translation -6.372201304173295 -5.430859651789495 -0.1738652989858965
-  rotation 0.5008784516076857 -0.7949472721614469 -0.34231507591422516 1.2378598360621966
+  translation -4.235164736271502e-22 0 0.6599545600000001
+  rotation 0 1 0 4.692820414042843e-06
   children [
-    Camera {
-    }
-    Transform {
-      scale 0.001 0.001 0.001
+    Pose {
+      translation -0.281 -0.282 -0.312
       children [
         Shape {
-        }
-        Shape {
-          appearance PBRAppearance {
+          appearance GenericTireAppearance {
           }
           geometry Mesh {
             url [
-              "../resources/drone_model.obj"
+              "dronik.OBIEKT-dronik.obj"
             ]
           }
         }
       ]
     }
   ]
-  boundingObject Mesh {
-    url [
-      "../../../../../../Downloads/dronik.OBIEKT-dronik.obj"
-    ]
-  }
-  physics Physics {
-    mass 2
-    damping Damping {
-      linear 0.6
-      angular 0.6
-    }
-  }
-  linearVelocity 0.0009174600461676788 -0.004694871881147261 -0.0005838641920895167
-  angularVelocity -0.020990171980321184 -0.004102958062817814 6.0149332588821456e-05
-}
-Solid {
-  translation 0.39068171123156353 0.5025389964287288 -0.2148628630418084
-  rotation 0.5016513660287254 0.2918071943375817 0.8143675265470393 2.2309453590603114
-  children [
-    Transform {
-      translation -0.28 -0.28 -0.22
-      scale 0.001 0.001 0.001
-      children [
-        Shape {
-        }
-        Shape {
-          appearance PBRAppearance {
+  boundingObject DEF BODY Group {
+    children [
+      Pose {
+        translation 0.1712 0.1712 0.0315
+        children [
+          Shape {
+            geometry Cylinder {
+              height 0.047
+              radius 0.126
+            }
           }
-          geometry Mesh {
-            url [
-              "../resources/drone_model.obj"
-            ]
-          }
-        }
-      ]
-    }
-    Shape {
-      appearance PBRAppearance {
-      }
-      geometry Mesh {
-        url [
-          "../../../../../../Downloads/dronik.OBIEKT-dronik.obj"
         ]
       }
-    }
-  ]
-  name "solid(1)"
-  boundingObject Mesh {
-    url [
-      "../../../../../../Downloads/dronik.OBIEKT-dronik.obj"
+      Pose {
+        translation 0.1712 -0.1712 0.0315
+        children [
+          Shape {
+            geometry Cylinder {
+              height 0.047
+              radius 0.126
+            }
+          }
+        ]
+      }
+      Pose {
+        translation -0.1712 -0.1712 0.0315
+        children [
+          Shape {
+            geometry Cylinder {
+              height 0.047
+              radius 0.126
+            }
+          }
+        ]
+      }
+      Pose {
+        translation -0.1712 0.1712 0.0315
+        children [
+          Shape {
+            geometry Cylinder {
+              height 0.047
+              radius 0.126
+            }
+          }
+        ]
+      }
+      Pose {
+        translation -0.1712 0.1712 0
+        rotation 0.35740699927911007 0.8628559982596194 0.35740699927911007 -1.7177753071795863
+        children [
+          Shape {
+            appearance PBRAppearance {
+            }
+            geometry Cylinder {
+              height 0.085
+              radius 0.015
+            }
+          }
+        ]
+      }
+      Pose {
+        translation -0.1712 -0.1712 0
+        rotation 0.35740699927911007 -0.8628559982596194 0.35740699927911007 1.71777
+        children [
+          Shape {
+            appearance PBRAppearance {
+            }
+            geometry Cylinder {
+              height 0.085
+              radius 0.015
+            }
+          }
+        ]
+      }
+      Pose {
+        translation 0.1712 -0.1712 0
+        rotation 0.35740699927911007 0.8628559982596194 0.35740699927911007 -1.7177753071795863
+        children [
+          Shape {
+            appearance PBRAppearance {
+            }
+            geometry Cylinder {
+              height 0.085
+              radius 0.015
+            }
+          }
+        ]
+      }
+      Pose {
+        translation 0.1712 0.1712 0
+        rotation -0.8628565621288802 0.3574058186283875 0.35740681862788 -1.7177753071795863
+        children [
+          Shape {
+            appearance PBRAppearance {
+            }
+            geometry Cylinder {
+              height 0.085
+              radius 0.015
+            }
+          }
+        ]
+      }
+      Pose {
+        translation 0.109 -0.109 0
+        rotation 0.8628565621288802 0.3574058186283875 0.35740681862788 1.71777
+        children [
+          Shape {
+            appearance PBRAppearance {
+            }
+            geometry Cylinder {
+              height 0.168
+              radius 0.01
+            }
+          }
+        ]
+      }
+      Pose {
+        translation -0.109 -0.109 0
+        rotation 0.3574058186283875 -0.8628565621288802 0.35740681862788 1.71777
+        children [
+          Shape {
+            appearance PBRAppearance {
+            }
+            geometry Cylinder {
+              height 0.168
+              radius 0.01
+            }
+          }
+        ]
+      }
+      Pose {
+        translation 0.109 0.109 0
+        rotation 0.35740699927911007 -0.8628559982596194 0.35740699927911007 1.71777
+        children [
+          Shape {
+            appearance PBRAppearance {
+            }
+            geometry Cylinder {
+              height 0.168
+              radius 0.01
+            }
+          }
+        ]
+      }
+      Pose {
+        translation -0.125 8.59528e-07 -0.234
+        rotation 1 0 0 1.5708
+        children [
+          Shape {
+            appearance PBRAppearance {
+            }
+            geometry Cylinder {
+              height 0.268
+              radius 0.01
+            }
+          }
+        ]
+        translationStep 0.001
+        rotationStep 0.05
+      }
+      Pose {
+        translation 0.125 8.59528e-07 -0.234
+        rotation 1 0 0 1.5708
+        children [
+          Shape {
+            appearance PBRAppearance {
+            }
+            geometry Cylinder {
+              height 0.268
+              radius 0.01
+            }
+          }
+        ]
+        translationStep 0.001
+        rotationStep 0.05
+      }
+      Pose {
+        translation -0.109 0.109 -1.23323e-07
+        rotation 0.3574058186283875 0.8628565621288802 -0.35740681862788 1.71777
+        children [
+          Shape {
+            appearance PBRAppearance {
+            }
+            geometry Cylinder {
+              height 0.168
+              radius 0.01
+            }
+          }
+        ]
+      }
+      Pose {
+        translation -0.0911502 0 -0.129818
+        rotation 0 1 0 -2.82743
+        children [
+          Shape {
+            appearance PBRAppearance {
+            }
+            geometry Cylinder {
+              height 0.225
+              radius 0.008
+            }
+          }
+        ]
+      }
+      Pose {
+        translation 0.0911502 0 -0.129818
+        rotation 0 1 0 2.82743339
+        children [
+          Shape {
+            appearance PBRAppearance {
+            }
+            geometry Cylinder {
+              height 0.225
+              radius 0.008
+            }
+          }
+        ]
+      }
+      Pose {
+        translation 0 0.019 -0.037
+        children [
+          Shape {
+            geometry Box {
+              size 0.095 0.25 0.024
+            }
+          }
+        ]
+      }
+      Shape {
+        geometry Box {
+          size 0.15 0.15 0.05
+        }
+      }
     ]
   }
   physics Physics {
-    density 100
-    mass 2
     centerOfMass [
-      0 0 0
+      0 0 0.67
     ]
+    damping Damping {
+      linear 0.5
+      angular 0.5
+    }
   }
-  linearVelocity 0.10458085136979386 0.05896883437431698 -0.004758148637172
-  angularVelocity 0.200528679626288 -0.2805881048702039 0.6975675658337994
+  controller "<none>"
 }
