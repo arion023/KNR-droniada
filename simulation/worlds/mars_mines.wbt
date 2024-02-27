@@ -22,8 +22,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.1515718224877007 -0.0608012927611407 -0.9865744702891571 3.895253629200883
-  position 1.5694150089620673 -1.4310079143142065 1.289103771691561
+  orientation 0.04712403428558152 0.9960250080543891 -0.07558775511222246 1.1184652495900242
+  position -6.906340644741574 -5.598875097917235 1.9863383740298295
 }
 TexturedBackground {
 }
@@ -35,8 +35,8 @@ Floor {
   }
 }
 DEF drone Solid {
-  translation -6.488014386492875 -6.525929963611639 0.24921237524843506
-  rotation 0.4614808078755818 0.201301987687028 -0.8640098226963351 0.0003929043622685287
+  translation -6.488014382650965 -6.52592997245146 0.24921237524497666
+  rotation 0.4614809542931275 0.20130189939694074 -0.8640097650628078 0.00039290441824215604
   children [
     Transform {
       translation -0.28 -0.28 -0.22
@@ -205,7 +205,7 @@ Solid {
 }
 Solid {
   translation -2.0769465364417286e-16 -0.0003516306984445791 0.029822482422153313
-  rotation 0.9999999999999999 -2.159184035052787e-13 -3.947300395263234e-15 0.029577091563237307
+  rotation 1 -2.1591840350527876e-13 -3.947300395263234e-15 0.02957709156323731
   children [
     Transform {
       translation -0.035 -0.035 -0.035
@@ -350,9 +350,109 @@ Solid {
   }
 }
 Robot {
-  translation -4.235164736271502e-22 0 0.6599545600000001
-  rotation 0 1 0 4.692820414042843e-06
+  translation -6.4900011449611466 -5.519998901623421 0.28937674791302814
+  rotation -0.999999999997866 3.916228992906442e-07 -2.0284433752797867e-06 4.501883844546396e-06
   children [
+    Propeller {
+      shaftAxis 0 0 1
+      device RotationalMotor {
+        name "motor_4"
+      }
+      fastHelix Solid {
+        translation -0.2 0.19 0.05
+        children [
+          DEF pro Shape {
+            appearance PBRAppearance {
+              baseColor 1 0 0
+              metalness 0
+            }
+            geometry Cylinder {
+              height 0.01
+              radius 0.07
+            }
+            castShadows FALSE
+          }
+        ]
+        boundingObject USE pro
+        physics Physics {
+        }
+      }
+    }
+    Propeller {
+      shaftAxis 0 0 1
+      device RotationalMotor {
+        name "motor_3"
+      }
+      fastHelix Solid {
+        translation -0.2 -0.19 0.05
+        children [
+          DEF pro Shape {
+            appearance PBRAppearance {
+              baseColor 0 1 0
+              metalness 0
+            }
+            geometry Cylinder {
+              height 0.01
+              radius 0.07
+            }
+            castShadows FALSE
+          }
+        ]
+        boundingObject USE pro
+        physics Physics {
+        }
+      }
+    }
+    Propeller {
+      shaftAxis 0 0 1
+      device RotationalMotor {
+        name "motor_1"
+      }
+      fastHelix Solid {
+        translation 0.19 0.2 0.05
+        children [
+          DEF prop Shape {
+            appearance PBRAppearance {
+              baseColor 0 0 1
+              metalness 0
+            }
+            geometry Cylinder {
+              height 0.01
+              radius 0.07
+            }
+            castShadows FALSE
+          }
+        ]
+        boundingObject USE prop
+        physics Physics {
+        }
+      }
+    }
+    Propeller {
+      shaftAxis 0 0 1
+      device RotationalMotor {
+        name "motor_2"
+      }
+      fastHelix Solid {
+        translation 0.19 -0.2 0.05
+        children [
+          DEF prop Shape {
+            appearance PBRAppearance {
+              baseColor 1 1 0
+              metalness 0
+            }
+            geometry Cylinder {
+              height 0.01
+              radius 0.07
+            }
+            castShadows FALSE
+          }
+        ]
+        boundingObject USE prop
+        physics Physics {
+        }
+      }
+    }
     Pose {
       translation -0.281 -0.282 -0.312
       children [
@@ -612,5 +712,5 @@ Robot {
       angular 0.5
     }
   }
-  controller "<none>"
+  controller "my_controller4"
 }
