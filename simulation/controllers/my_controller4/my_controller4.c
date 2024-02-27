@@ -19,11 +19,14 @@ int main() {
 
 
   // Ustaw prędkość obrotową śmigła
-  wb_motor_set_velocity(propeller1, 5.0);
-  wb_motor_set_velocity(propeller2, 5.0);
-  wb_motor_set_velocity(propeller3, 5.0);
-  wb_motor_set_velocity(propeller4, 5.0);  // Ustaw prędkość na 10 radianów na sekundę
+  
+  wb_motor_set_velocity(propeller1, 8.0);
+  wb_motor_set_velocity(propeller2, 8.0);
+  wb_motor_set_velocity(propeller3, 8.0);
+  wb_motor_set_velocity(propeller4, 8.0);  // Ustaw prędkość na 10 radianów na sekundę
 
+
+  int i = 0;
   // Pętla główna
   while (wb_robot_step(64) != -1) {
     // Możesz dodać dodatkową logikę sterowania tutaj
