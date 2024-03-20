@@ -6,7 +6,7 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/Grass.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/pipes/protos/PipeSection.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/manhole/protos/SquareManhole.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/vehicles/protos/abstract/GenericTireAppearance.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/dji/mavic/protos/Mavic2Pro.proto"
 
 WorldInfo {
   defaultDamping Damping {
@@ -22,8 +22,9 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.04712403428558152 0.9960250080543891 -0.07558775511222246 1.1184652495900242
-  position -6.906340644741574 -5.598875097917235 1.9863383740298295
+  orientation -0.11920174025980257 0.9664282885469505 0.2276121881957259 0.9932267127567634
+  position -8.558001702967598 -5.803012239947555 3.944394858063038
+  follow "Mavic 2 PRO"
 }
 TexturedBackground {
 }
@@ -35,8 +36,8 @@ Floor {
   }
 }
 DEF drone Solid {
-  translation -6.488014382650965 -6.52592997245146 0.24921237524497666
-  rotation 0.4614809542931275 0.20130189939694074 -0.8640097650628078 0.00039290441824215604
+  translation -6.488014378799086 -6.525929981288341 0.24921237524297318
+  rotation 0.4614810592449884 0.20130193680331332 -0.8640097002912399 0.00039290447746173987
   children [
     Transform {
       translation -0.28 -0.28 -0.22
@@ -66,6 +67,8 @@ DEF drone Solid {
       angular 0.6
     }
   }
+  linearVelocity 3.770784295908912e-09 -8.650808338342145e-09 -1.9618255863438255e-12
+  angularVelocity 6.725414102389384e-11 2.6155699259974942e-11 -2.517601557297637e-11
 }
 SquareManhole {
   translation -6.5 -6.5 0
@@ -86,6 +89,22 @@ SquareManhole {
   translation -6.5 -5.5 -1.11022e-16
   name "robot parking"
   size 0.5 0.5 0.1
+}
+Mavic2Pro {
+  hidden position_0_0 -5.583434708473261e-09
+  hidden linearVelocity_0 0.034940310528895784 0.0416854737459508 1.1959893924185257e-08
+  hidden angularVelocity_0 -1.5055042328756714e-07 -3.0712588833915314e-07 0.00011460667687955824
+  hidden position_5_0 -1.5832424260509015e-08
+  hidden linearVelocity_5 0.03492758799487728 0.04169257453895542 1.4277528026748914e-08
+  hidden angularVelocity_5 -1.5072995725854344e-07 -3.0734014128218954e-07 0.00011455245662158432
+  hidden position_6_0 6.472193707240747e-08
+  hidden linearVelocity_6 0.034927510176932595 0.04169191084751788 1.238537363026022e-08
+  hidden angularVelocity_6 -1.4740946752756345e-07 -3.0893561283549157e-07 0.00011455245193016375
+  hidden rotation_7 1 0 0 6.664001874625056e-08
+  hidden linearVelocity_7 0.03492701508215751 0.041691096303648555 9.552341460259553e-09
+  hidden angularVelocity_7 1.4051687170095536e-07 2.903130781641261e-07 0.00011454913048447888
+  translation -2.765652039269336 -4.552965159042328 0.9999490011086879
+  rotation -0.0014859202860555548 0.0046080013839321175 0.999988279113385 1.1228988078614954
 }
 Solid {
   translation -4 4 0.029822482422153317
@@ -205,7 +224,7 @@ Solid {
 }
 Solid {
   translation -2.0769465364417286e-16 -0.0003516306984445791 0.029822482422153313
-  rotation 1 -2.1591840350527876e-13 -3.947300395263234e-15 0.02957709156323731
+  rotation 1 -2.1591840350527876e-13 -3.947300395263234e-15 0.029577091563237318
   children [
     Transform {
       translation -0.035 -0.035 -0.035
@@ -348,369 +367,4 @@ Solid {
   }
   physics Physics {
   }
-}
-Robot {
-  translation -6.4900011449611466 -5.519998901623421 0.28937674791302814
-  rotation -0.999999999997866 3.916228992906442e-07 -2.0284433752797867e-06 4.501883844546396e-06
-  children [
-    Propeller {
-      shaftAxis 0 0 1
-      device RotationalMotor {
-        name "motor_4"
-      }
-      fastHelix Solid {
-        translation -0.2 0.19 0.05
-        children [
-          DEF pro Shape {
-            appearance PBRAppearance {
-              baseColor 1 0 0
-              metalness 0
-            }
-            geometry Cylinder {
-              height 0.01
-              radius 0.07
-            }
-            castShadows FALSE
-          }
-        ]
-        boundingObject USE pro
-        physics Physics {
-        }
-      }
-    }
-    Propeller {
-      shaftAxis 0 0 1
-      device RotationalMotor {
-        name "motor_3"
-      }
-      fastHelix Solid {
-        translation -0.2 -0.19 0.05
-        children [
-          DEF pro Shape {
-            appearance PBRAppearance {
-              baseColor 0 1 0
-              metalness 0
-            }
-            geometry Cylinder {
-              height 0.01
-              radius 0.07
-            }
-            castShadows FALSE
-          }
-        ]
-        boundingObject USE pro
-        physics Physics {
-        }
-      }
-    }
-    Propeller {
-      shaftAxis 0 0 1
-      device RotationalMotor {
-        name "motor_1"
-      }
-      fastHelix Solid {
-        translation 0.19 0.2 0.05
-        children [
-          DEF prop Shape {
-            appearance PBRAppearance {
-              baseColor 0 0 1
-              metalness 0
-            }
-            geometry Cylinder {
-              height 0.01
-              radius 0.07
-            }
-            castShadows FALSE
-          }
-        ]
-        boundingObject USE prop
-        physics Physics {
-        }
-      }
-    }
-    Propeller {
-      shaftAxis 0 0 1
-      device RotationalMotor {
-        name "motor_2"
-      }
-      fastHelix Solid {
-        translation 0.19 -0.2 0.05
-        children [
-          DEF prop Shape {
-            appearance PBRAppearance {
-              baseColor 1 1 0
-              metalness 0
-            }
-            geometry Cylinder {
-              height 0.01
-              radius 0.07
-            }
-            castShadows FALSE
-          }
-        ]
-        boundingObject USE prop
-        physics Physics {
-        }
-      }
-    }
-    Pose {
-      translation -0.281 -0.282 -0.312
-      children [
-        Shape {
-          appearance GenericTireAppearance {
-          }
-          geometry Mesh {
-            url [
-              "dronik.OBIEKT-dronik.obj"
-            ]
-          }
-        }
-      ]
-    }
-  ]
-  boundingObject DEF BODY Group {
-    children [
-      Pose {
-        translation 0.1712 0.1712 0.0315
-        children [
-          Shape {
-            geometry Cylinder {
-              height 0.047
-              radius 0.126
-            }
-          }
-        ]
-      }
-      Pose {
-        translation 0.1712 -0.1712 0.0315
-        children [
-          Shape {
-            geometry Cylinder {
-              height 0.047
-              radius 0.126
-            }
-          }
-        ]
-      }
-      Pose {
-        translation -0.1712 -0.1712 0.0315
-        children [
-          Shape {
-            geometry Cylinder {
-              height 0.047
-              radius 0.126
-            }
-          }
-        ]
-      }
-      Pose {
-        translation -0.1712 0.1712 0.0315
-        children [
-          Shape {
-            geometry Cylinder {
-              height 0.047
-              radius 0.126
-            }
-          }
-        ]
-      }
-      Pose {
-        translation -0.1712 0.1712 0
-        rotation 0.35740699927911007 0.8628559982596194 0.35740699927911007 -1.7177753071795863
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.085
-              radius 0.015
-            }
-          }
-        ]
-      }
-      Pose {
-        translation -0.1712 -0.1712 0
-        rotation 0.35740699927911007 -0.8628559982596194 0.35740699927911007 1.71777
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.085
-              radius 0.015
-            }
-          }
-        ]
-      }
-      Pose {
-        translation 0.1712 -0.1712 0
-        rotation 0.35740699927911007 0.8628559982596194 0.35740699927911007 -1.7177753071795863
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.085
-              radius 0.015
-            }
-          }
-        ]
-      }
-      Pose {
-        translation 0.1712 0.1712 0
-        rotation -0.8628565621288802 0.3574058186283875 0.35740681862788 -1.7177753071795863
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.085
-              radius 0.015
-            }
-          }
-        ]
-      }
-      Pose {
-        translation 0.109 -0.109 0
-        rotation 0.8628565621288802 0.3574058186283875 0.35740681862788 1.71777
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.168
-              radius 0.01
-            }
-          }
-        ]
-      }
-      Pose {
-        translation -0.109 -0.109 0
-        rotation 0.3574058186283875 -0.8628565621288802 0.35740681862788 1.71777
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.168
-              radius 0.01
-            }
-          }
-        ]
-      }
-      Pose {
-        translation 0.109 0.109 0
-        rotation 0.35740699927911007 -0.8628559982596194 0.35740699927911007 1.71777
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.168
-              radius 0.01
-            }
-          }
-        ]
-      }
-      Pose {
-        translation -0.125 8.59528e-07 -0.234
-        rotation 1 0 0 1.5708
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.268
-              radius 0.01
-            }
-          }
-        ]
-        translationStep 0.001
-        rotationStep 0.05
-      }
-      Pose {
-        translation 0.125 8.59528e-07 -0.234
-        rotation 1 0 0 1.5708
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.268
-              radius 0.01
-            }
-          }
-        ]
-        translationStep 0.001
-        rotationStep 0.05
-      }
-      Pose {
-        translation -0.109 0.109 -1.23323e-07
-        rotation 0.3574058186283875 0.8628565621288802 -0.35740681862788 1.71777
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.168
-              radius 0.01
-            }
-          }
-        ]
-      }
-      Pose {
-        translation -0.0911502 0 -0.129818
-        rotation 0 1 0 -2.82743
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.225
-              radius 0.008
-            }
-          }
-        ]
-      }
-      Pose {
-        translation 0.0911502 0 -0.129818
-        rotation 0 1 0 2.82743339
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.225
-              radius 0.008
-            }
-          }
-        ]
-      }
-      Pose {
-        translation 0 0.019 -0.037
-        children [
-          Shape {
-            geometry Box {
-              size 0.095 0.25 0.024
-            }
-          }
-        ]
-      }
-      Shape {
-        geometry Box {
-          size 0.15 0.15 0.05
-        }
-      }
-    ]
-  }
-  physics Physics {
-    centerOfMass [
-      0 0 0.67
-    ]
-    damping Damping {
-      linear 0.5
-      angular 0.5
-    }
-  }
-  controller "my_controller4"
 }
