@@ -52,7 +52,7 @@ K_ROLL_P = 50.0           # P constant of the roll PID
 K_PITCH_P = 30.0          # P constant of the pitch PID
 
 # Variables
-target_altitude = 1.0  # The target altitude. Can be changed by the user
+target_altitude = 0.5  # The target altitude. Can be changed by the user
 
 # Main loop
 while robot.step(timestep) != -1:
@@ -77,17 +77,17 @@ while robot.step(timestep) != -1:
     key = keyboard.getKey()
     while key > 0:
         if key == Keyboard.UP:
-            pitch_disturbance = -2.0
+            pitch_disturbance = -1.0
         elif key == Keyboard.DOWN:
-            pitch_disturbance = 2.0
+            pitch_disturbance = 1.0
         elif key == Keyboard.RIGHT:
-            yaw_disturbance = -1.3
+            yaw_disturbance = -1.0
         elif key == Keyboard.LEFT:
-            yaw_disturbance = 1.3
+            yaw_disturbance = 1.0
         elif key == Keyboard.SHIFT + Keyboard.RIGHT:
-            roll_disturbance = -1.0
+            roll_disturbance = -0.8
         elif key == Keyboard.SHIFT + Keyboard.LEFT:
-            roll_disturbance = 1.0
+            roll_disturbance = 0.8
         elif key == Keyboard.SHIFT + Keyboard.UP:
             target_altitude += 0.05
             print("target altitude: {:.2f} m".format(target_altitude))
