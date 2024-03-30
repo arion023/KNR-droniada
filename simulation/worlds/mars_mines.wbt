@@ -22,8 +22,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation -0.38300985086260025 0.8539208495895203 0.3523104267241045 1.075266525993054
-  position -5.411441822140149 -4.465141568124259 2.184386068334174
+  orientation 0.40194613849911753 -0.4865083290322428 -0.7757247885222588 4.649402071757313
+  position -3.0539927221057637 -14.906480476206523 21.15506332988755
   follow "Mavic 2 PRO"
 }
 TexturedBackground {
@@ -89,16 +89,12 @@ SquareManhole {
   size 0.5 0.5 0.1
 }
 Mavic2Pro {
-  hidden position_0_0 -5.583434708473261e-09
-  hidden position_5_0 -1.5832424260509015e-08
-  hidden position_6_0 6.472193707240747e-08
-  hidden rotation_7 1 0 0 6.664001874625056e-08
-  translation -6.5 -5.5 0.1
+  translation -6.5 -5.5 0.12
   rotation -0.0014859202860555548 0.0046080013839321175 0.999988279113385 1.1228988078614954
-  controller "PYTON"
+  controller "Kamera"
 }
 Solid {
-  translation -4 4 0.029822482422153317
+  translation -4 4 0.0376
   children [
     Transform {
       translation -0.035 -0.035 -0.035
@@ -127,7 +123,7 @@ Solid {
   }
 }
 Solid {
-  translation 0 4 0.029822482422153317
+  translation 0 4 0.0376
   children [
     Transform {
       translation -0.035 -0.035 -0.035
@@ -156,7 +152,7 @@ Solid {
   }
 }
 Solid {
-  translation 4 4 0.029822482422153317
+  translation 4 4 0.0376
   children [
     Transform {
       translation -0.035 -0.035 -0.035
@@ -185,7 +181,7 @@ Solid {
   }
 }
 Solid {
-  translation -4 0 0.029822482422153317
+  translation -4 0 0.0376
   children [
     Transform {
       translation -0.035 -0.035 -0.035
@@ -214,7 +210,7 @@ Solid {
   }
 }
 Solid {
-  translation -2.0769465364417286e-16 -0.0003516306984445791 0.029822482422153313
+  translation -2.07695e-16 -0.000351631 0.0376
   rotation 1 -2.1591840350527876e-13 -3.947300395263234e-15 0.029577091563237318
   children [
     Transform {
@@ -244,7 +240,7 @@ Solid {
   }
 }
 Solid {
-  translation 4 0 0.029822482422153317
+  translation 4 0 0.0376
   children [
     Transform {
       translation -0.035 -0.035 -0.035
@@ -273,7 +269,7 @@ Solid {
   }
 }
 Solid {
-  translation -4 -4 0.029822482422153317
+  translation -4 -4 0.0376
   children [
     Transform {
       translation -0.035 -0.035 -0.035
@@ -302,7 +298,7 @@ Solid {
   }
 }
 Solid {
-  translation 0 -4 0.029822482422153317
+  translation 0 -4 0.0376
   children [
     Transform {
       translation -0.035 -0.035 -0.035
@@ -331,7 +327,7 @@ Solid {
   }
 }
 Solid {
-  translation 4 -4 0.029822482422153317
+  translation 4 -4 0.0376
   children [
     Transform {
       translation -0.035 -0.035 -0.035
@@ -356,6 +352,158 @@ Solid {
   boundingObject Sphere {
     radius 0.03
   }
+  physics Physics {
+  }
+}
+Solid {
+  children [
+    DEF plachta Shape {
+      appearance PBRAppearance {
+        metalness 0
+      }
+      geometry Box {
+        size 1 1 0.005
+      }
+    }
+  ]
+  name "plachta_1"
+  boundingObject USE plachta
+  physics Physics {
+  }
+}
+Solid {
+  translation 4 0 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        metalness 0
+      }
+      geometry Box {
+        size 1 1 0.005
+      }
+    }
+  ]
+  name "plachta_2"
+  boundingObject USE plachta
+  physics Physics {
+  }
+}
+Solid {
+  translation 4 4 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        metalness 0
+      }
+      geometry Box {
+        size 1 1 0.005
+      }
+    }
+  ]
+  name "plachta_3"
+  boundingObject USE plachta
+  physics Physics {
+  }
+}
+Solid {
+  translation 0 4 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        metalness 0
+      }
+      geometry Box {
+        size 1 1 0.005
+      }
+    }
+  ]
+  name "plachta_4"
+  boundingObject USE plachta
+  physics Physics {
+  }
+}
+Solid {
+  translation 0 -4 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        metalness 0
+      }
+      geometry Box {
+        size 1 1 0.005
+      }
+    }
+  ]
+  name "plachta_5"
+  boundingObject USE plachta
+  physics Physics {
+  }
+}
+Solid {
+  translation -4 -4 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        metalness 0
+      }
+      geometry Box {
+        size 1 1 0.005
+      }
+    }
+  ]
+  name "plachta_6"
+  boundingObject USE plachta
+  physics Physics {
+  }
+}
+Solid {
+  translation -4 0 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        metalness 0
+      }
+      geometry Box {
+        size 1 1 0.005
+      }
+    }
+  ]
+  name "plachta_7"
+  boundingObject USE plachta
+  physics Physics {
+  }
+}
+Solid {
+  translation -4 4 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        metalness 0
+      }
+      geometry Box {
+        size 1 1 0.005
+      }
+    }
+  ]
+  name "plachta_8"
+  boundingObject USE plachta
+  physics Physics {
+  }
+}
+Solid {
+  translation 4 -4 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        metalness 0
+      }
+      geometry Box {
+        size 1 1 0.005
+      }
+    }
+  ]
+  name "plachta_9"
+  boundingObject USE plachta
   physics Physics {
   }
 }

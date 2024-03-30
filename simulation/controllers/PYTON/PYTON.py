@@ -32,11 +32,22 @@ gyro.enable(timestep)
 
 keyboard = Keyboard()
 keyboard.enable(timestep)
-
+camera=robot.getDevice('camera')
+camera.enable(64)
 camera_roll_motor = robot.getDevice('camera roll')
 camera_pitch_motor = robot.getDevice('camera pitch')
 # camera_yaw_motor = robot.getDevice('camera yaw')  # Not used in this example
-
+# Pobierz dostęp do kamery i stawów obrotowych kamery
+camera_yaw = robot.getDevice('camera yaw')
+camera_pitch = robot.getDevice('camera pitch')
+camera_roll = robot.getDevice('camera roll')
+yaw_sensor = robot.getDevice('camera yaw sensor')
+pitch_sensor = robot.getDevice('camera pitch sensor')
+roll_sensor = robot.getDevice('camera roll sensor')
+max_speed = 1.0
+yaw_sensor.enable(64)
+pitch_sensor.enable(64)
+roll_sensor.enable(64)
 motors = []
 for name in ['front left propeller', 'front right propeller', 'rear left propeller', 'rear right propeller']:
     motor = robot.getDevice(name)
@@ -74,6 +85,10 @@ while robot.step(timestep) != -1:
 
     # Transform the keyboard input to disturbances on the stabilization algorithm
     roll_disturbance = pitch_disturbance = yaw_disturbance = 0.0
+    # Zdefiniuj początkowe pozycje kamery
+    current_pitch = pitch_sensor.getValue()
+    current_roll = roll_sensor.getValue()
+
     key = keyboard.getKey()
     while key > 0:
         if key == Keyboard.UP:
@@ -94,6 +109,22 @@ while robot.step(timestep) != -1:
         elif key == Keyboard.SHIFT + Keyboard.DOWN:
             target_altitude -= 0.05
             print("target altitude: {:.2f} m".format(target_altitude))
+        
+        # Obsługa klawiatury dla kamery
+        if key == ord('1'):
+            current_pitch += 0.1
+            camera_pitch.setPosition(current_pitch)
+        elif key == ord('2'):
+            current_pitch -= 0.1
+            camera_pitch.setPosition(current_pitch)
+        elif key == ord('A'):
+            current_roll += 0.1
+            camera_roll.setPosition(current_roll)
+        elif key == ord('D'):
+            current_roll -= 0.1
+            camera_roll.setPosition(current_roll)
+
+    # Pobierz kolejny klawisz
         key = keyboard.getKey()
 
     # Compute the roll, pitch, yaw and vertical inputs
