@@ -1,9 +1,9 @@
-Step 1: Initializing the Script
+- `Step 1`: Initializing the Script
 Navigate to the worlds directory.
 Launch the set_ball_color.py script.
-Step 2: Opening the Simulation World
+- `Step 2`: Opening the Simulation World
 Open the file mars_mines.wbt.
-Step 3: Running the Simulation
+- `Step 3`: Running the Simulation
 After the simulation window opens, immediately stop it by clicking the stop icon.
 
 
