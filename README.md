@@ -1,9 +1,9 @@
-- `Step 1`: Initializing the Script
+- Step 1: Initializing the Script
 Navigate to the worlds directory.
 Launch the set_ball_color.py script.
-- `Step 2`: Opening the Simulation World
+- Step 2: Opening the Simulation World
 Open the file mars_mines.wbt.
-- `Step 3`: Running the Simulation
+- Step 3: Running the Simulation
 After the simulation window opens, immediately stop it by clicking the stop icon.
 
 
@@ -23,6 +23,6 @@ Start the simulation by clicking the execute button.
 ![image](https://github.com/arion023/KNR-droniada/assets/117840525/b099eba9-7e52-4603-aead-15bd512aad22)
 
 
-Step 4: Controlling the Drone and camera
+- Step 4: Controlling the Drone and camera
 Use the arrow keys for drone control.
 to control camera use 1 and 2 key.
