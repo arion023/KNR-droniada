@@ -6,7 +6,7 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/Grass.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/pipes/protos/PipeSection.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/manhole/protos/SquareManhole.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/vehicles/protos/abstract/GenericTireAppearance.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/dji/mavic/protos/Mavic2Pro.proto"
 
 WorldInfo {
   defaultDamping Damping {
@@ -22,8 +22,9 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.04712403428558152 0.9960250080543891 -0.07558775511222246 1.1184652495900242
-  position -6.906340644741574 -5.598875097917235 1.9863383740298295
+  orientation -0.15048286185600146 0.5163796141117007 0.8430344016809034 0.6971388618460886
+  position -15.215691536630946 -8.549445101518153 4.34507146612925
+  follow "Mavic 2 PRO"
 }
 TexturedBackground {
 }
@@ -35,8 +36,8 @@ Floor {
   }
 }
 DEF drone Solid {
-  translation -6.488014382650965 -6.52592997245146 0.24921237524497666
-  rotation 0.4614809542931275 0.20130189939694074 -0.8640097650628078 0.00039290441824215604
+  translation -6.488014378799086 -6.525929981288341 0.24921237524297318
+  rotation 0.4614810592449884 0.20130193680331332 -0.8640097002912399 0.00039290447746173987
   children [
     Transform {
       translation -0.28 -0.28 -0.22
@@ -87,8 +88,13 @@ SquareManhole {
   name "robot parking"
   size 0.5 0.5 0.1
 }
+Mavic2Pro {
+  translation -6.5 -5.5 0.12
+  rotation -0.0014859202860555548 0.0046080013839321175 0.999988279113385 1.1228988078614954
+  controller "Patrol"
+}
 Solid {
-  translation -4 4 0.029822482422153317
+  translation -4 4 0.0376
   children [
     Transform {
       translation -0.035 -0.035 -0.035
@@ -117,7 +123,7 @@ Solid {
   }
 }
 Solid {
-  translation 0 4 0.029822482422153317
+  translation 0 4 0.0376
   children [
     Transform {
       translation -0.035 -0.035 -0.035
@@ -146,7 +152,7 @@ Solid {
   }
 }
 Solid {
-  translation 4 4 0.029822482422153317
+  translation 4 4 0.0376
   children [
     Transform {
       translation -0.035 -0.035 -0.035
@@ -175,7 +181,7 @@ Solid {
   }
 }
 Solid {
-  translation -4 0 0.029822482422153317
+  translation -4 0 0.0376
   children [
     Transform {
       translation -0.035 -0.035 -0.035
@@ -204,8 +210,8 @@ Solid {
   }
 }
 Solid {
-  translation -2.0769465364417286e-16 -0.0003516306984445791 0.029822482422153313
-  rotation 1 -2.1591840350527876e-13 -3.947300395263234e-15 0.02957709156323731
+  translation -2.07695e-16 -0.000351631 0.0376
+  rotation 1 -2.1591840350527876e-13 -3.947300395263234e-15 0.029577091563237318
   children [
     Transform {
       translation -0.035 -0.035 -0.035
@@ -234,7 +240,7 @@ Solid {
   }
 }
 Solid {
-  translation 4 0 0.029822482422153317
+  translation 4 0 0.0376
   children [
     Transform {
       translation -0.035 -0.035 -0.035
@@ -263,7 +269,7 @@ Solid {
   }
 }
 Solid {
-  translation -4 -4 0.029822482422153317
+  translation -4 -4 0.0376
   children [
     Transform {
       translation -0.035 -0.035 -0.035
@@ -292,7 +298,7 @@ Solid {
   }
 }
 Solid {
-  translation 0 -4 0.029822482422153317
+  translation 0 -4 0.0376
   children [
     Transform {
       translation -0.035 -0.035 -0.035
@@ -321,7 +327,7 @@ Solid {
   }
 }
 Solid {
-  translation 4 -4 0.029822482422153317
+  translation 4 -4 0.0376
   children [
     Transform {
       translation -0.035 -0.035 -0.035
@@ -349,374 +355,155 @@ Solid {
   physics Physics {
   }
 }
-Robot {
-  translation -6.4900011449611466 -5.519998901623421 0.28937674791302814
-  rotation -0.999999999997866 3.916228992906442e-07 -2.0284433752797867e-06 4.501883844546396e-06
+Solid {
   children [
-    Propeller {
-      shaftAxis 0 0 1
-      device RotationalMotor {
-        name "motor_4"
-        maxVelocity 20
+    DEF plachta Shape {
+      appearance PBRAppearance {
+        metalness 0
       }
-      fastHelix Solid {
-        translation -0.2 0.19 0.05
-        children [
-          DEF pro Shape {
-            appearance PBRAppearance {
-              baseColor 1 0 0
-              metalness 0
-            }
-            geometry Cylinder {
-              height 0.01
-              radius 0.07
-            }
-            castShadows FALSE
-          }
-        ]
-        boundingObject USE pro
-        physics Physics {
-        }
+      geometry Box {
+        size 1 1 0.005
       }
-    }
-    Propeller {
-      shaftAxis 0 0 1
-      torqueConstants -1 0
-      device RotationalMotor {
-        name "motor_3"
-        maxVelocity 20
-      }
-      fastHelix Solid {
-        translation -0.2 -0.19 0.05
-        children [
-          DEF pro Shape {
-            appearance PBRAppearance {
-              baseColor 0 1 0
-              metalness 0
-            }
-            geometry Cylinder {
-              height 0.01
-              radius 0.07
-            }
-            castShadows FALSE
-          }
-        ]
-        boundingObject USE pro
-        physics Physics {
-        }
-      }
-    }
-    Propeller {
-      shaftAxis 0 0 1
-      torqueConstants -1 0
-      device RotationalMotor {
-        name "motor_1"
-        maxVelocity 20
-      }
-      fastHelix Solid {
-        translation 0.19 0.2 0.05
-        children [
-          DEF prop Shape {
-            appearance PBRAppearance {
-              baseColor 0 0 1
-              metalness 0
-            }
-            geometry Cylinder {
-              height 0.01
-              radius 0.07
-            }
-            castShadows FALSE
-          }
-        ]
-        boundingObject USE prop
-        physics Physics {
-        }
-      }
-    }
-    Propeller {
-      shaftAxis 0 0 1
-      device RotationalMotor {
-        name "motor_2"
-        maxVelocity 20
-      }
-      fastHelix Solid {
-        translation 0.19 -0.2 0.05
-        children [
-          DEF prop Shape {
-            appearance PBRAppearance {
-              baseColor 1 1 0
-              metalness 0
-            }
-            geometry Cylinder {
-              height 0.01
-              radius 0.07
-            }
-            castShadows FALSE
-          }
-        ]
-        boundingObject USE prop
-        physics Physics {
-        }
-      }
-    }
-    Pose {
-      translation -0.281 -0.282 -0.312
-      children [
-        Shape {
-          appearance GenericTireAppearance {
-          }
-          geometry Mesh {
-            url [
-              "dronik.OBIEKT-dronik.obj"
-            ]
-          }
-        }
-      ]
     }
   ]
-  boundingObject DEF BODY Group {
-    children [
-      Pose {
-        translation 0.1712 0.1712 0.0315
-        children [
-          Shape {
-            geometry Cylinder {
-              height 0.047
-              radius 0.126
-            }
-          }
-        ]
-      }
-      Pose {
-        translation 0.1712 -0.1712 0.0315
-        children [
-          Shape {
-            geometry Cylinder {
-              height 0.047
-              radius 0.126
-            }
-          }
-        ]
-      }
-      Pose {
-        translation -0.1712 -0.1712 0.0315
-        children [
-          Shape {
-            geometry Cylinder {
-              height 0.047
-              radius 0.126
-            }
-          }
-        ]
-      }
-      Pose {
-        translation -0.1712 0.1712 0.0315
-        children [
-          Shape {
-            geometry Cylinder {
-              height 0.047
-              radius 0.126
-            }
-          }
-        ]
-      }
-      Pose {
-        translation -0.1712 0.1712 0
-        rotation 0.35740699927911007 0.8628559982596194 0.35740699927911007 -1.7177753071795863
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.085
-              radius 0.015
-            }
-          }
-        ]
-      }
-      Pose {
-        translation -0.1712 -0.1712 0
-        rotation 0.35740699927911007 -0.8628559982596194 0.35740699927911007 1.71777
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.085
-              radius 0.015
-            }
-          }
-        ]
-      }
-      Pose {
-        translation 0.1712 -0.1712 0
-        rotation 0.35740699927911007 0.8628559982596194 0.35740699927911007 -1.7177753071795863
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.085
-              radius 0.015
-            }
-          }
-        ]
-      }
-      Pose {
-        translation 0.1712 0.1712 0
-        rotation -0.8628565621288802 0.3574058186283875 0.35740681862788 -1.7177753071795863
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.085
-              radius 0.015
-            }
-          }
-        ]
-      }
-      Pose {
-        translation 0.109 -0.109 0
-        rotation 0.8628565621288802 0.3574058186283875 0.35740681862788 1.71777
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.168
-              radius 0.01
-            }
-          }
-        ]
-      }
-      Pose {
-        translation -0.109 -0.109 0
-        rotation 0.3574058186283875 -0.8628565621288802 0.35740681862788 1.71777
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.168
-              radius 0.01
-            }
-          }
-        ]
-      }
-      Pose {
-        translation 0.109 0.109 0
-        rotation 0.35740699927911007 -0.8628559982596194 0.35740699927911007 1.71777
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.168
-              radius 0.01
-            }
-          }
-        ]
-      }
-      Pose {
-        translation -0.125 8.59528e-07 -0.234
-        rotation 1 0 0 1.5708
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.268
-              radius 0.01
-            }
-          }
-        ]
-        translationStep 0.001
-        rotationStep 0.05
-      }
-      Pose {
-        translation 0.125 8.59528e-07 -0.234
-        rotation 1 0 0 1.5708
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.268
-              radius 0.01
-            }
-          }
-        ]
-        translationStep 0.001
-        rotationStep 0.05
-      }
-      Pose {
-        translation -0.109 0.109 -1.23323e-07
-        rotation 0.3574058186283875 0.8628565621288802 -0.35740681862788 1.71777
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.168
-              radius 0.01
-            }
-          }
-        ]
-      }
-      Pose {
-        translation -0.0911502 0 -0.129818
-        rotation 0 1 0 -2.82743
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.225
-              radius 0.008
-            }
-          }
-        ]
-      }
-      Pose {
-        translation 0.0911502 0 -0.129818
-        rotation 0 1 0 2.82743339
-        children [
-          Shape {
-            appearance PBRAppearance {
-            }
-            geometry Cylinder {
-              height 0.225
-              radius 0.008
-            }
-          }
-        ]
-      }
-      Pose {
-        translation 0 0.019 -0.037
-        children [
-          Shape {
-            geometry Box {
-              size 0.095 0.25 0.024
-            }
-          }
-        ]
-      }
-      Shape {
-        geometry Box {
-          size 0.15 0.15 0.05
-        }
-      }
-    ]
-  }
+  name "plachta_1"
+  boundingObject USE plachta
   physics Physics {
-    centerOfMass [
-      0 0 0.67
-    ]
-    damping Damping {
-      linear 0.5
-      angular 0.5
-    }
   }
-  controller "my_controller4"
+}
+Solid {
+  translation 4 0 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        metalness 0
+      }
+      geometry Box {
+        size 1 1 0.005
+      }
+    }
+  ]
+  name "plachta_2"
+  boundingObject USE plachta
+  physics Physics {
+  }
+}
+Solid {
+  translation 4 4 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        metalness 0
+      }
+      geometry Box {
+        size 1 1 0.005
+      }
+    }
+  ]
+  name "plachta_3"
+  boundingObject USE plachta
+  physics Physics {
+  }
+}
+Solid {
+  translation 0 4 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        metalness 0
+      }
+      geometry Box {
+        size 1 1 0.005
+      }
+    }
+  ]
+  name "plachta_4"
+  boundingObject USE plachta
+  physics Physics {
+  }
+}
+Solid {
+  translation 0 -4 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        metalness 0
+      }
+      geometry Box {
+        size 1 1 0.005
+      }
+    }
+  ]
+  name "plachta_5"
+  boundingObject USE plachta
+  physics Physics {
+  }
+}
+Solid {
+  translation -4 -4 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        metalness 0
+      }
+      geometry Box {
+        size 1 1 0.005
+      }
+    }
+  ]
+  name "plachta_6"
+  boundingObject USE plachta
+  physics Physics {
+  }
+}
+Solid {
+  translation -4 0 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        metalness 0
+      }
+      geometry Box {
+        size 1 1 0.005
+      }
+    }
+  ]
+  name "plachta_7"
+  boundingObject USE plachta
+  physics Physics {
+  }
+}
+Solid {
+  translation -4 4 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        metalness 0
+      }
+      geometry Box {
+        size 1 1 0.005
+      }
+    }
+  ]
+  name "plachta_8"
+  boundingObject USE plachta
+  physics Physics {
+  }
+}
+Solid {
+  translation 4 -4 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        metalness 0
+      }
+      geometry Box {
+        size 1 1 0.005
+      }
+    }
+  ]
+  name "plachta_9"
+  boundingObject USE plachta
+  physics Physics {
+  }
 }
