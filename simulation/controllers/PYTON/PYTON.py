@@ -1,6 +1,9 @@
 from controller import Robot, Motor, Camera, GPS, InertialUnit, Gyro, LED, Keyboard, Compass
 import math
-
+import numpy as np
+import time
+import os
+from PIL import Image
 # Helper functions
 def clamp(value, min_value, max_value):
     return max(min_value, min(value, max_value))
@@ -11,6 +14,10 @@ def sign(x):
 # Create the Robot instance and initialize devices
 robot = Robot()
 timestep = int(robot.getBasicTimeStep())
+folder_path = "path_to_save_images"
+os.makedirs(folder_path, exist_ok=True)  # Utwórz folder jeśli nie istnieje
+
+image_counter = 0  
 
 camera = robot.getDevice('camera')
 camera.enable(timestep)
@@ -49,6 +56,8 @@ yaw_sensor.enable(64)
 pitch_sensor.enable(64)
 roll_sensor.enable(64)
 motors = []
+width = camera.getWidth()
+height = camera.getHeight()
 for name in ['front left propeller', 'front right propeller', 'rear left propeller', 'rear right propeller']:
     motor = robot.getDevice(name)
     motor.setPosition(float('inf'))
@@ -64,18 +73,48 @@ K_PITCH_P = 30.0          # P constant of the pitch PID
 
 # Variables
 target_altitude = 0.5  # The target altitude. Can be changed by the user
-
+sampling_interval = 10
+last_sampling_time = time.time()
 # Main loop
 while robot.step(timestep) != -1:
-    time = robot.getTime()
 
-    # Retrieve robot position using the sensors
+   
+    
+    time1 = robot.getTime()
+    current_time = time.time()
+
+    # Capture image from the camera
+    image_bytes = camera.getImage()
+    image_counter += 1
+
+    if image_counter % 8 == 0:
+        try:
+            # Assuming the dimensions are known and correct (400x240)
+            # Notice the change in indexing the channels from BGR to RGB
+            image_array = np.frombuffer(image_bytes, dtype=np.uint8).reshape((240, 400, 4))
+            img = Image.fromarray(image_array[..., [2, 1, 0, 3]], 'RGBA')  # Swap BGR to RGB
+            img = img.convert('RGB')  # Convert to RGB if alpha channel is not needed
+
+            # Construct the file path
+            file_path = os.path.join(folder_path, f"image_{image_counter}.jpg")
+            
+            # Save the image as JPEG with specified quality
+            try:
+                img.save(file_path, 'JPEG', quality=90)
+                print(f"Image saved as {file_path}")
+            except IOError as e:
+                print(f"Failed to save image: {e}")
+    
+        except ValueError as e:
+            print(f"Failed to handle image data: {e}")
+
+    #
     roll, pitch, yaw = imu.getRollPitchYaw()
     altitude = gps.getValues()[2]
     roll_velocity, pitch_velocity, _ = gyro.getValues()
 
     # Blink the front LEDs alternatively with a 1 second rate
-    led_state = int(time) % 2
+    led_state = int(time1) % 2
     front_left_led.set(led_state)
     front_right_led.set(not led_state)
 

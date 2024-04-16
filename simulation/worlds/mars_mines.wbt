@@ -102,7 +102,7 @@ Solid {
       children [
         DEF tennis_ball Shape {
           appearance PBRAppearance {
-            baseColor 1 1 0
+            baseColor 0 255 0
             roughness 1
             metalness 0
           }
@@ -131,7 +131,7 @@ Solid {
       children [
         DEF tennis_ball Shape {
           appearance PBRAppearance {
-            baseColor 1 1 0
+            baseColor 0 255 0
             roughness 1
             metalness 0
           }
@@ -160,7 +160,7 @@ Solid {
       children [
         DEF tennis_ball Shape {
           appearance PBRAppearance {
-            baseColor 1 1 0
+            baseColor 0 0 255
             roughness 1
             metalness 0
           }
@@ -189,7 +189,7 @@ Solid {
       children [
         DEF tennis_ball Shape {
           appearance PBRAppearance {
-            baseColor 1 1 0
+            baseColor 0 0 0
             roughness 1
             metalness 0
           }
@@ -219,7 +219,7 @@ Solid {
       children [
         DEF tennis_ball Shape {
           appearance PBRAppearance {
-            baseColor 1 1 0
+            baseColor 0 255 0
             roughness 1
             metalness 0
           }
@@ -248,7 +248,7 @@ Solid {
       children [
         DEF tennis_ball Shape {
           appearance PBRAppearance {
-            baseColor 1 1 0
+            baseColor 0 255 0
             roughness 1
             metalness 0
           }
@@ -277,7 +277,7 @@ Solid {
       children [
         DEF tennis_ball Shape {
           appearance PBRAppearance {
-            baseColor 1 1 0
+            baseColor 0 255 0
             roughness 1
             metalness 0
           }
@@ -306,7 +306,7 @@ Solid {
       children [
         DEF tennis_ball Shape {
           appearance PBRAppearance {
-            baseColor 1 1 0
+            baseColor 0 255 0
             roughness 1
             metalness 0
           }
@@ -335,7 +335,7 @@ Solid {
       children [
         DEF tennis_ball Shape {
           appearance PBRAppearance {
-            baseColor 1 1 0
+            baseColor 255 0 0
             roughness 1
             metalness 0
           }
