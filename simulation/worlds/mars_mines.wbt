@@ -91,7 +91,7 @@ SquareManhole {
 Mavic2Pro {
   translation -6.5 -5.5 0.12
   rotation -0.0014859202860555548 0.0046080013839321175 0.999988279113385 1.1228988078614954
-  controller "Kamera"
+  controller "PYTON"
 }
 Solid {
   translation -4 4 0.0376
@@ -102,7 +102,7 @@ Solid {
       children [
         DEF tennis_ball Shape {
           appearance PBRAppearance {
-            baseColor 0 255 0
+            baseColor 0 1 0
             roughness 1
             metalness 0
           }
@@ -131,7 +131,7 @@ Solid {
       children [
         DEF tennis_ball Shape {
           appearance PBRAppearance {
-            baseColor 0 255 0
+            baseColor 0 1 0
             roughness 1
             metalness 0
           }
@@ -160,7 +160,7 @@ Solid {
       children [
         DEF tennis_ball Shape {
           appearance PBRAppearance {
-            baseColor 0 0 255
+            baseColor 0 0 1
             roughness 1
             metalness 0
           }
@@ -219,7 +219,7 @@ Solid {
       children [
         DEF tennis_ball Shape {
           appearance PBRAppearance {
-            baseColor 0 255 0
+            baseColor 0 1 0
             roughness 1
             metalness 0
           }
@@ -248,7 +248,7 @@ Solid {
       children [
         DEF tennis_ball Shape {
           appearance PBRAppearance {
-            baseColor 0 255 0
+            baseColor 0 1 0
             roughness 1
             metalness 0
           }
@@ -277,7 +277,7 @@ Solid {
       children [
         DEF tennis_ball Shape {
           appearance PBRAppearance {
-            baseColor 0 255 0
+            baseColor 0 1 0
             roughness 1
             metalness 0
           }
@@ -306,7 +306,7 @@ Solid {
       children [
         DEF tennis_ball Shape {
           appearance PBRAppearance {
-            baseColor 0 255 0
+            baseColor 0 1 0
             roughness 1
             metalness 0
           }
@@ -335,7 +335,7 @@ Solid {
       children [
         DEF tennis_ball Shape {
           appearance PBRAppearance {
-            baseColor 255 0 0
+            baseColor 1 0 0
             roughness 1
             metalness 0
           }
