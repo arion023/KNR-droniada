@@ -14,10 +14,10 @@ def sign(x):
 # Create the Robot instance and initialize devices
 robot = Robot()
 timestep = int(robot.getBasicTimeStep())
-folder_path = "path_to_save_images"
+folder_path = "images_from_camera"
 os.makedirs(folder_path, exist_ok=True)  # Utwórz folder jeśli nie istnieje
 
-image_counter = 0  
+image_counter = 0
 
 camera = robot.getDevice('camera')
 camera.enable(timestep)
@@ -78,8 +78,8 @@ last_sampling_time = time.time()
 # Main loop
 while robot.step(timestep) != -1:
 
-   
-    
+
+
     time1 = robot.getTime()
     current_time = time.time()
 
@@ -97,14 +97,14 @@ while robot.step(timestep) != -1:
 
             # Construct the file path
             file_path = os.path.join(folder_path, f"image_{image_counter}.jpg")
-            
+
             # Save the image as JPEG with specified quality
             try:
                 img.save(file_path, 'JPEG', quality=90)
                 print(f"Image saved as {file_path}")
             except IOError as e:
                 print(f"Failed to save image: {e}")
-    
+
         except ValueError as e:
             print(f"Failed to handle image data: {e}")
 
@@ -148,7 +148,7 @@ while robot.step(timestep) != -1:
         elif key == Keyboard.SHIFT + Keyboard.DOWN:
             target_altitude -= 0.05
             print("target altitude: {:.2f} m".format(target_altitude))
-        
+
         # Obsługa klawiatury dla kamery
         if key == ord('1'):
             current_pitch += 0.1
