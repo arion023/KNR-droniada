@@ -51,10 +51,13 @@ camera_roll = robot.getDevice('camera roll')
 yaw_sensor = robot.getDevice('camera yaw sensor')
 pitch_sensor = robot.getDevice('camera pitch sensor')
 roll_sensor = robot.getDevice('camera roll sensor')
+
+# Ustaw prędkości obrotowe dla poszczególnych stawów
 max_speed = 1.0
 yaw_sensor.enable(64)
 pitch_sensor.enable(64)
 roll_sensor.enable(64)
+
 motors = []
 width = camera.getWidth()
 height = camera.getHeight()
@@ -75,6 +78,10 @@ K_PITCH_P = 30.0          # P constant of the pitch PID
 target_altitude = 0.5  # The target altitude. Can be changed by the user
 sampling_interval = 10
 last_sampling_time = time.time()
+
+current_pitch = 0
+current_roll = 0
+
 # Main loop
 while robot.step(timestep) != -1:
 
@@ -119,8 +126,8 @@ while robot.step(timestep) != -1:
     front_right_led.set(not led_state)
 
     # Stabilize the Camera by actuating the camera motors according to the gyro feedback
-    camera_roll_motor.setPosition(-0.115 * roll_velocity)
-    camera_pitch_motor.setPosition(-0.1 * pitch_velocity)
+    camera_roll_motor.setPosition(current_roll - 0.115 * roll_velocity)
+    camera_pitch_motor.setPosition(current_pitch - 0.1 * pitch_velocity)
 
     # Transform the keyboard input to disturbances on the stabilization algorithm
     roll_disturbance = pitch_disturbance = yaw_disturbance = 0.0
