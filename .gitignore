@@ -1,0 +1,4 @@
+#ignore all files with that extensions
+*.exe
+*.d
+*.o
