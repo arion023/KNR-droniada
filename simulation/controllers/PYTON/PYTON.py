@@ -98,7 +98,7 @@ while robot.step(timestep) != -1:
         try:
             # Assuming the dimensions are known and correct (400x240)
             # Notice the change in indexing the channels from BGR to RGB
-            image_array = np.frombuffer(image_bytes, dtype=np.uint8).reshape((240, 100, 4))
+            image_array = np.frombuffer(image_bytes, dtype=np.uint8).reshape((420, 784, 4))
             img = Image.fromarray(image_array[..., [2, 1, 0, 3]], 'RGBA')  # Swap BGR to RGB
             img = img.convert('RGB')  # Convert to RGB if alpha channel is not needed
 
