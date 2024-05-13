@@ -112,7 +112,7 @@ if __name__ == '__main__':
 
         #
         roll, pitch, yaw = imu.getRollPitchYaw()
-        print(roll, pitch, yaw)
+        # print(roll, pitch, yaw)
 
         altitude = gps.getValues()[2]
         roll_velocity, pitch_velocity, _ = gyro.getValues()
@@ -176,6 +176,8 @@ if __name__ == '__main__':
         yaw_input = yaw_disturbance
         clamped_difference_altitude = clamp(target_altitude - altitude + K_VERTICAL_OFFSET, -1.0, 1.0)
 
+        # print(roll_disturbance, roll_disturbance, yaw_disturbance)
+
         vertical_input = K_VERTICAL_P * math.pow(clamped_difference_altitude, 3.0)
 
         # Actuate the motors taking into consideration all the computed inputs
@@ -187,7 +189,7 @@ if __name__ == '__main__':
         # print(-front_right_motor_input)
         # print(rear_left_motor_input)
         # print(rear_right_motor_input)
-        time.sleep(0.1)
+        # time.sleep(0.1)
         motors[0].setVelocity(front_left_motor_input)
         motors[1].setVelocity(-front_right_motor_input)  # Inverted to match the propeller's direction
         motors[2].setVelocity(-rear_left_motor_input)  # Inverted to match the propeller's direction
