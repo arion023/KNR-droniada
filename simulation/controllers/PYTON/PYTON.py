@@ -39,7 +39,6 @@ gyro.enable(timestep)
 
 keyboard = Keyboard()
 keyboard.enable(timestep)
-camera=robot.getDevice('camera')
 camera.enable(64)
 camera_roll_motor = robot.getDevice('camera roll')
 camera_pitch_motor = robot.getDevice('camera pitch')
@@ -59,11 +58,9 @@ pitch_sensor.enable(64)
 roll_sensor.enable(64)
 
 motors = []
-width = camera.getWidth()
-height = camera.getHeight()
 for name in ['front left propeller', 'front right propeller', 'rear left propeller', 'rear right propeller']:
     motor = robot.getDevice(name)
-    motor.setPosition(float('inf'))
+    motor.setPosition(float('+inf'))
     motor.setVelocity(1.0)
     motors.append(motor)
 
@@ -82,112 +79,118 @@ last_sampling_time = time.time()
 current_pitch = 0
 current_roll = 0
 
-# Main loop
-while robot.step(timestep) != -1:
+if __name__ == '__main__':
+    # Main loop
+    while robot.step(timestep) != -1:
 
+        time1 = robot.getTime()
 
+        # Capture image from the camera
+        image_bytes = camera.getImage()
+        image_counter += 1
 
-    time1 = robot.getTime()
-    current_time = time.time()
-
-    # Capture image from the camera
-    image_bytes = camera.getImage()
-    image_counter += 1
-
-    if image_counter % 8 == 0:
-        try:
-            # Assuming the dimensions are known and correct (400x240)
-            # Notice the change in indexing the channels from BGR to RGB
-            image_array = np.frombuffer(image_bytes, dtype=np.uint8).reshape((420, 784, 4))
-            img = Image.fromarray(image_array[..., [2, 1, 0, 3]], 'RGBA')  # Swap BGR to RGB
-            img = img.convert('RGB')  # Convert to RGB if alpha channel is not needed
-
-            # Construct the file path
-            file_path = os.path.join(folder_path, f"image_{image_counter}.jpg")
-
-            # Save the image as JPEG with specified quality
+        if image_counter % 8 == 0:
             try:
-                img.save(file_path, 'JPEG', quality=90)
-                print(f"Image saved as {file_path}")
-            except IOError as e:
-                print(f"Failed to save image: {e}")
+                # Assuming the dimensions are known and correct (400x240)
+                # Notice the change in indexing the channels from BGR to RGB
+                image_array = np.frombuffer(image_bytes, dtype=np.uint8).reshape((420, 784, 4))
+                img = Image.fromarray(image_array[..., [2, 1, 0, 3]], 'RGBA')  # Swap BGR to RGB
+                img = img.convert('RGB')  # Convert to RGB if alpha channel is not needed
 
-        except ValueError as e:
-            print(f"Failed to handle image data: {e}")
+                # Construct the file path
+                file_path = os.path.join(folder_path, f"image_{image_counter}.jpg")
 
-    #
-    roll, pitch, yaw = imu.getRollPitchYaw()
-    altitude = gps.getValues()[2]
-    roll_velocity, pitch_velocity, _ = gyro.getValues()
+                # Save the image as JPEG with specified quality
+                try:
+                    img.save(file_path, 'JPEG', quality=90)
+                    print(f"Image saved as {file_path}")
+                except IOError as e:
+                    print(f"Failed to save image: {e}")
 
-    # Blink the front LEDs alternatively with a 1 second rate
-    led_state = int(time1) % 2
-    front_left_led.set(led_state)
-    front_right_led.set(not led_state)
+            except ValueError as e:
+                print(f"Failed to handle image data: {e}")
 
-    # Stabilize the Camera by actuating the camera motors according to the gyro feedback
-    camera_roll_motor.setPosition(current_roll - 0.115 * roll_velocity)
-    camera_pitch_motor.setPosition(current_pitch - 0.1 * pitch_velocity)
+        #
+        roll, pitch, yaw = imu.getRollPitchYaw()
+        print(roll, pitch, yaw)
 
-    # Transform the keyboard input to disturbances on the stabilization algorithm
-    roll_disturbance = pitch_disturbance = yaw_disturbance = 0.0
-    # Zdefiniuj początkowe pozycje kamery
-    current_pitch = pitch_sensor.getValue()
-    current_roll = roll_sensor.getValue()
+        altitude = gps.getValues()[2]
+        roll_velocity, pitch_velocity, _ = gyro.getValues()
 
-    key = keyboard.getKey()
-    while key > 0:
-        if key == Keyboard.UP:
-            pitch_disturbance = -1.0
-        elif key == Keyboard.DOWN:
-            pitch_disturbance = 1.0
-        elif key == Keyboard.RIGHT:
-            yaw_disturbance = -1.0
-        elif key == Keyboard.LEFT:
-            yaw_disturbance = 1.0
-        elif key == Keyboard.SHIFT + Keyboard.RIGHT:
-            roll_disturbance = -0.8
-        elif key == Keyboard.SHIFT + Keyboard.LEFT:
-            roll_disturbance = 0.8
-        elif key == Keyboard.SHIFT + Keyboard.UP:
-            target_altitude += 0.05
-            print("target altitude: {:.2f} m".format(target_altitude))
-        elif key == Keyboard.SHIFT + Keyboard.DOWN:
-            target_altitude -= 0.05
-            print("target altitude: {:.2f} m".format(target_altitude))
+        # Blink the front LEDs alternatively with a 1 second rate
+        led_state = int(time1) % 2
+        front_left_led.set(led_state)
+        front_right_led.set(not led_state)
 
-        # Obsługa klawiatury dla kamery
-        if key == ord('1'):
-            current_pitch += 0.1
-            camera_pitch.setPosition(current_pitch)
-        elif key == ord('2'):
-            current_pitch -= 0.1
-            camera_pitch.setPosition(current_pitch)
-        elif key == ord('A'):
-            current_roll += 0.1
-            camera_roll.setPosition(current_roll)
-        elif key == ord('D'):
-            current_roll -= 0.1
-            camera_roll.setPosition(current_roll)
+        # Stabilize the Camera by actuating the camera motors according to the gyro feedback
+        camera_roll_motor.setPosition(current_roll - 0.115 * roll_velocity)
+        camera_pitch_motor.setPosition(current_pitch - 0.1 * pitch_velocity)
 
-    # Pobierz kolejny klawisz
+        # Transform the keyboard input to disturbances on the stabilization algorithm
+        roll_disturbance = pitch_disturbance = yaw_disturbance = 0.0
+        # Zdefiniuj początkowe pozycje kamery
+        current_pitch = pitch_sensor.getValue()
+        current_roll = roll_sensor.getValue()
+
+        key = keyboard.getKey()
+        while key > 0:
+            if key == Keyboard.UP:
+                pitch_disturbance = -1.0
+            elif key == Keyboard.DOWN:
+                pitch_disturbance = 1.0
+            elif key == Keyboard.RIGHT:
+                yaw_disturbance = -1.0
+            elif key == Keyboard.LEFT:
+                yaw_disturbance = 1.0
+            elif key == Keyboard.SHIFT + Keyboard.RIGHT:
+                roll_disturbance = -0.8
+            elif key == Keyboard.SHIFT + Keyboard.LEFT:
+                roll_disturbance = 0.8
+            elif key == Keyboard.SHIFT + Keyboard.UP:
+                target_altitude += 0.05
+                print("target altitude: {:.2f} m".format(target_altitude))
+            elif key == Keyboard.SHIFT + Keyboard.DOWN:
+                target_altitude -= 0.05
+                print("target altitude: {:.2f} m".format(target_altitude))
+
+            # Obsługa klawiatury dla kamery
+            if key == ord('1'):
+                current_pitch += 0.1
+                camera_pitch.setPosition(current_pitch)
+            elif key == ord('2'):
+                current_pitch -= 0.1
+                camera_pitch.setPosition(current_pitch)
+            elif key == ord('A'):
+                current_roll += 0.1
+                camera_roll.setPosition(current_roll)
+            elif key == ord('D'):
+                current_roll -= 0.1
+                camera_roll.setPosition(current_roll)
+
+        # Pobierz kolejny klawisz
         key = keyboard.getKey()
 
-    # Compute the roll, pitch, yaw and vertical inputs
-    roll_input = K_ROLL_P * clamp(roll, -1.0, 1.0) + roll_disturbance
-    pitch_input = K_PITCH_P * clamp(pitch, -1.0, 1.0) + pitch_disturbance
-    yaw_input = yaw_disturbance
-    clamped_difference_altitude = clamp(target_altitude - altitude + K_VERTICAL_OFFSET, -1.0, 1.0)
-    vertical_input = K_VERTICAL_P * math.pow(clamped_difference_altitude, 3.0)
+        #Compute the roll, pitch, yaw and vertical inputs
+        roll_input = K_ROLL_P * clamp(roll, -1.0, 1.0) + roll_disturbance
+        pitch_input = K_PITCH_P * clamp(pitch, -1.0, 1.0) + pitch_disturbance
+        yaw_input = yaw_disturbance
+        clamped_difference_altitude = clamp(target_altitude - altitude + K_VERTICAL_OFFSET, -1.0, 1.0)
 
-    # Actuate the motors taking into consideration all the computed inputs
-    front_left_motor_input = K_VERTICAL_THRUST + vertical_input - roll_input + pitch_input - yaw_input
-    front_right_motor_input = K_VERTICAL_THRUST + vertical_input + roll_input + pitch_input + yaw_input
-    rear_left_motor_input = K_VERTICAL_THRUST + vertical_input - roll_input - pitch_input + yaw_input
-    rear_right_motor_input = K_VERTICAL_THRUST + vertical_input + roll_input - pitch_input - yaw_input
-    motors[0].setVelocity(front_left_motor_input)
-    motors[1].setVelocity(-front_right_motor_input)  # Inverted to match the propeller's direction
-    motors[2].setVelocity(-rear_left_motor_input)  # Inverted to match the propeller's direction
-    motors[3].setVelocity(rear_right_motor_input)
+        vertical_input = K_VERTICAL_P * math.pow(clamped_difference_altitude, 3.0)
 
-# Cleanup code (if any) would go here. In Webots, the cleanup is mostly handled by Webots itself.
+        # Actuate the motors taking into consideration all the computed inputs
+        front_left_motor_input = K_VERTICAL_THRUST + vertical_input - roll_input + pitch_input - yaw_input
+        front_right_motor_input = K_VERTICAL_THRUST + vertical_input + roll_input + pitch_input + yaw_input
+        rear_left_motor_input = K_VERTICAL_THRUST + vertical_input - roll_input - pitch_input + yaw_input
+        rear_right_motor_input = K_VERTICAL_THRUST + vertical_input + roll_input - pitch_input - yaw_input
+        # print(front_left_motor_input)
+        # print(-front_right_motor_input)
+        # print(rear_left_motor_input)
+        # print(rear_right_motor_input)
+        time.sleep(0.1)
+        motors[0].setVelocity(front_left_motor_input)
+        motors[1].setVelocity(-front_right_motor_input)  # Inverted to match the propeller's direction
+        motors[2].setVelocity(-rear_left_motor_input)  # Inverted to match the propeller's direction
+        motors[3].setVelocity(rear_right_motor_input)
+
+    # Cleanup code (if any) would go here. In Webots, the cleanup is mostly handled by Webots itself.
