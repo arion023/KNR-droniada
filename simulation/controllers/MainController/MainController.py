@@ -9,9 +9,14 @@ import numpy as np
 from controller import Robot
 from simple_pid import PID
 
+import queue
+
+
 from drone import Drone
 from camera import DroneCamera
 from webots_drone.utils import encode_image
+
+
 
 
 # Drone Robot
@@ -23,15 +28,17 @@ class DroneController(Robot):
     This use the FlightControl to controlate the motors velocity of the drone.
     """
 
-    def __init__(self):
+    def __init__(self, que_main_to_drone, que_camera_to_main):
         super(DroneController, self).__init__()
         # local variables
         self.timestep = int(self.getBasicTimeStep())
+        self.que_main_to_drone = que_main_to_drone
+        self.que_camera_to_main = que_camera_to_main
 
         # Initialize Flight Control
         print('Initializing Drone Control...', end=' ')
         self.__drone = Drone(self)
-        self.__camera = DroneCamera(self, fps=32, timestep=self.timestep, folder_path="./images/")
+        self.__camera = DroneCamera(self, self.que_camera_to_main, fps=32, timestep=self.timestep, folder_path="./images/")
         self.__time_delta = self.timestep / 1000
         self.__motor_controllers(self.__time_delta)
 
@@ -127,9 +134,12 @@ class DroneController(Robot):
         return pose_disturbance
 
     def __compute_velocity(self):
-        #TODO: compute disturbances velocities and recive them from the que
-        #mock up
-        disturbances = [0.0, 0.0, 0.0, 2.] # velocities in roll, pitch, yaw, z
+        command = self.que_main_to_drone.get() # velocities in roll, pitch, yaw, z
+        if command:
+            disturbances = command
+        else:
+            disturbances = [0., 0., 0.]
+
         # apply disturbances velocities
         pose_disturbance = self.__compute_disturbances(disturbances)
         roll_d, pitch_d, yaw_d, thrust_d = pose_disturbance
@@ -188,6 +198,21 @@ class DroneController(Robot):
 
 if __name__ == '__main__':
     # run controller
-    controller = DroneController()
+
+    fifo_camera_to_main = queue.Queue()
+    fifo_main_to_drone = queue.Queue()
+
+    for _ in range(320):
+        fifo_main_to_drone.put([0.,0.,0.,2.])
+
+
+    for _ in range(320):
+        fifo_main_to_drone.put([0.5,0.5, 0.,10.])
+
+    for _ in range(320):
+        fifo_main_to_drone.put([0.2,0.2,0.5,0.])
+
+
+    controller = DroneController(que_main_to_drone=fifo_main_to_drone, que_camera_to_main=fifo_camera_to_main)
     controller.run()
     del controller

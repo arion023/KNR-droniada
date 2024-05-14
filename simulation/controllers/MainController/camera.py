@@ -4,9 +4,10 @@ import os
 from PIL import Image
 
 class DroneCamera:
-    def __init__(self, drone_node, fps, timestep, folder_path):
+    def __init__(self, drone_node, que_to_main, fps, timestep, folder_path):
         self.drone_node = drone_node
         self.timestep = timestep
+        self.que_to_main=que_to_main
 
         #to use gyro first initialize drone, because it enables gyro
         self.gyro = self.drone_node.getDevice('gyro')
@@ -44,7 +45,8 @@ class DroneCamera:
 
     def move_camera(self):
         #TODO get instructions from que and assign them to delta_camera_position
-        delta_camera_position = [0.1, 0] # delta_pitch, delta_roll
+
+        delta_camera_position = [0., 0.] # delta_pitch, delta_roll
         delta_pitch, delta_roll = delta_camera_position
 
         camera_pitch = self.pitch_sensor.getValue()
@@ -58,6 +60,10 @@ class DroneCamera:
     def run(self):
         self.gimbal_stabilize()
         self.move_camera()
+        img_with_data = self.capture_image()
+        if img_with_data:
+            self.save_img(*img_with_data)
+            self.que_to_main.put(img_with_data)
 
     def capture_image(self):
         current_time = self.drone_node.getTime()
@@ -65,18 +71,21 @@ class DroneCamera:
         image_bytes = self.camera.getImage()
         self.image_counter += 1
 
-        if self.image_counter % 2 == 0:
-            try:
-                image_array = np.frombuffer(image_bytes, dtype=np.uint8).reshape((240, 400, 4))
-                img = Image.fromarray(image_array[..., [2, 1, 0, 3]], 'RGBA')
-                img = img.convert('RGB')
+        try:
+            image_array = np.frombuffer(image_bytes, dtype=np.uint8).reshape((2560, 1960, 4))
+            img = Image.fromarray(image_array[..., [2, 1, 0, 3]], 'RGBA')
+            img = img.convert('RGB')
+            return img, elapsed_time
 
-                file_path = os.path.join(self.folder_path, f"image_{self.image_counter}.jpg")
-                img.save(file_path, 'JPEG', quality=90)
+        except ValueError as e:
+            print(f"Failed to handle image data: {e}")
 
-                print(f"Time since start: {int(elapsed_time)} ms")
-            except ValueError as e:
-                print(f"Failed to handle image data: {e}")
+    def save_img(self, img, elapsed_time):
+        file_path = os.path.join(self.folder_path, f"image_{self.image_counter}.jpg")
+        img.save(file_path, 'JPEG', quality=90)
+
+        print(f"Time since start: {int(elapsed_time)} ms")
+
 
 # Użycie klasy Kamera
 if __name__ == "__main__":

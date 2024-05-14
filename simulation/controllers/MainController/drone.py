@@ -11,8 +11,6 @@ from webots_drone.utils import bytes2image
 from webots_drone.utils import orientation_correction
 
 
-
-
 class Drone:
     """The Drone class manage each sensor and actuators of the drone.
 
@@ -32,6 +30,7 @@ class Drone:
     def __init__(self, robot):
         # Time helpers
         self.time_counter = 0
+
 
         # Variables
         self.lift_thrust = 68.5  # with this thrust, the drone lifts.

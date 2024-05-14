@@ -91,7 +91,17 @@ SquareManhole {
 Mavic2Pro {
   translation -6.5 -5.5 0.12
   rotation -0.0014859202860555548 0.0046080013839321175 0.999988279113385 1.1228988078614954
-  controller "PYTON"
+  controller "MainController"
+  controllerArgs [
+    ""
+  ]
+  cameraSlot [
+    Camera {
+      fieldOfView 2.33
+      width 2560
+      height 1960
+    }
+  ]
 }
 Solid {
   translation -4 4 0.0376
