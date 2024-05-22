@@ -6,11 +6,13 @@ Created on Wed Apr 29 23:16:03 2020
 @author: Angel Ayala <angel4ayala [at] gmail.com>
 """
 import numpy as np
+import pickle
 from controller import Robot
 from simple_pid import PID
 
+import os
+import sys
 import queue
-
 
 from drone import Drone
 from camera import DroneCamera
@@ -28,19 +30,32 @@ class DroneController(Robot):
     This use the FlightControl to controlate the motors velocity of the drone.
     """
 
-    def __init__(self, que_main_to_drone, que_camera_to_main):
+    def __init__(self, main_to_drone_pipe, camera_to_main_pipe):
         super(DroneController, self).__init__()
         # local variables
         self.timestep = int(self.getBasicTimeStep())
-        self.que_main_to_drone = que_main_to_drone
-        self.que_camera_to_main = que_camera_to_main
+        self.read_from_main_fp = open(main_to_drone_pipe, 'r')
+        self.last_set_velocities = [0., 0., 0., 0.]
+
 
         # Initialize Flight Control
         print('Initializing Drone Control...', end=' ')
         self.__drone = Drone(self)
-        self.__camera = DroneCamera(self, self.que_camera_to_main, fps=32, timestep=self.timestep, folder_path="./images/")
+        self.__camera = DroneCamera(self, camera_to_main_pipe, fps=4, timestep=self.timestep, folder_path="./images/", if_camera_save=False)
         self.__time_delta = self.timestep / 1000
         self.__motor_controllers(self.__time_delta)
+
+        self.imu = self.getDevice('inertial unit')
+        self.imu.enable(self.timestep)
+
+        self.gps = self.getDevice('gps')
+        self.gps.enable(self.timestep)
+        self.start_position = self.gps.getValues()
+        self.last_set_destination = self.start_position
+
+
+        compass = self.getDevice('compass')
+        compass.enable(self.timestep)
 
         # Initialize comms
         # self.state = self.getDevice('StateEmitter')  # channel 4
@@ -133,15 +148,19 @@ class DroneController(Robot):
                             thrust_level + disturbances[3]]
         return pose_disturbance
 
+
+
+
     def __compute_velocity(self):
-        command = self.que_main_to_drone.get() # velocities in roll, pitch, yaw, z
+        command = self.read_from_main_fp.read(1) # velocities in roll, pitch, yaw, z
+
         if command:
-            disturbances = command
-        else:
-            disturbances = [0., 0., 0.]
+            self.last_set_velocities = pickle.loads(command)
+
+        velocities = self.last_set_velocities
 
         # apply disturbances velocities
-        pose_disturbance = self.__compute_disturbances(disturbances)
+        pose_disturbance = self.__compute_disturbances(velocities)
         roll_d, pitch_d, yaw_d, thrust_d = pose_disturbance
 
         fl_motor = thrust_d + roll_d - pitch_d - yaw_d  # front L
@@ -174,6 +193,7 @@ class DroneController(Robot):
         # send data
         # emitter_send_json(self.state, msg_data)
 
+
     def run(self):
         """Run controller's main loop.
 
@@ -187,6 +207,7 @@ class DroneController(Robot):
         # control loop
         print('Drone control is active')
         while self.step(self.timestep) != -1:
+            print("gps: ", self.gps.getValues())
             # actuates over devices and motors
             propellers_vel = self.__compute_velocity()
             self.__drone.set_motors_velocity(*propellers_vel)
@@ -196,23 +217,18 @@ class DroneController(Robot):
             # self.__send_state()
 
 
+
 if __name__ == '__main__':
     # run controller
 
-    fifo_camera_to_main = queue.Queue()
-    fifo_main_to_drone = queue.Queue()
+    main_to_drone_pipe, drone_to_main_pipe = os.pipe()
+    main_to_camera_pipe, camera_to_main_pipe = os.pipe()
 
-    for _ in range(320):
-        fifo_main_to_drone.put([0.,0.,0.,2.])
+    print("main_to_drone_pipe, drone_to_main_pipe: " + str(main_to_drone_pipe) + ", " + str(drone_to_main_pipe))
+    print("main_to_camera_pipe, camera_to_main_pipe: " + str(main_to_camera_pipe) + ", " + str(camera_to_main_pipe))
 
+    controller = DroneController(main_to_drone_pipe=main_to_drone_pipe, camera_to_main_pipe=camera_to_main_pipe)
 
-    for _ in range(320):
-        fifo_main_to_drone.put([0.5,0.5, 0.,10.])
-
-    for _ in range(320):
-        fifo_main_to_drone.put([0.2,0.2,0.5,0.])
-
-
-    controller = DroneController(que_main_to_drone=fifo_main_to_drone, que_camera_to_main=fifo_camera_to_main)
     controller.run()
+
     del controller
