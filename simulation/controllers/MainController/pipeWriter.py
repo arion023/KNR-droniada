@@ -1,7 +1,7 @@
 import sys, os, time
 import pickle, struct
 
-FIFO_PATH = "./main_to_controller"
+FIFO_PATH = "./pipes/main_to_controller"
 
 def generate_comands():
     with open(FIFO_PATH, 'w') as fifo:

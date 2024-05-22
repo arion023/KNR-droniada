@@ -3,7 +3,7 @@ import fcntl
 import time
 import pickle, struct
 
-FIFO_PATH = "./main_to_controller"
+FIFO_PATH = "./pipes/main_to_controller"
 
 def read_from_fifo_non_blocking():
     with open(FIFO_PATH, 'r', buffering=1) as fifo:

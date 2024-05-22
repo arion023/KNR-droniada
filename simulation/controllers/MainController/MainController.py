@@ -12,7 +12,7 @@ from simple_pid import PID
 
 import os
 import sys
-import queue
+import struct, fcntl
 
 from drone import Drone
 from camera import DroneCamera
@@ -30,18 +30,20 @@ class DroneController(Robot):
     This use the FlightControl to controlate the motors velocity of the drone.
     """
 
-    def __init__(self, main_to_drone_pipe, camera_to_main_pipe):
+    def __init__(self, fifo_from_main_path, fifo_to_main_path):
         super(DroneController, self).__init__()
         # local variables
         self.timestep = int(self.getBasicTimeStep())
-        self.read_from_main_fp = open(main_to_drone_pipe, 'r')
+        self.fifo_read_path = fifo_from_main_path
         self.last_set_velocities = [0., 0., 0., 0.]
-
+        
+        self.read_fifo = None
+        self.open_read_fifo()
 
         # Initialize Flight Control
         print('Initializing Drone Control...', end=' ')
         self.__drone = Drone(self)
-        self.__camera = DroneCamera(self, camera_to_main_pipe, fps=4, timestep=self.timestep, folder_path="./images/", if_camera_save=False)
+        self.__camera = DroneCamera(self, fifo_to_main_path, fps=1, timestep=self.timestep, folder_path="./images/", if_camera_save=False)
         self.__time_delta = self.timestep / 1000
         self.__motor_controllers(self.__time_delta)
 
@@ -148,14 +150,42 @@ class DroneController(Robot):
                             thrust_level + disturbances[3]]
         return pose_disturbance
 
+    def open_read_fifo(self):
+        self.read_fifo = open(self.fifo_read_path, 'r', buffering=1)
+        # Set the file descriptor to non-blocking mode
+        fd = self.read_fifo.fileno()
+        fl = fcntl.fcntl(fd, fcntl.F_GETFL)
+        fcntl.fcntl(fd, fcntl.F_SETFL, fl | os.O_NONBLOCK)
+    
+
+    def close_read_fifo(self):
+        self.read_fifo.close()
+
+
+    def read_from_fifo(self):
+
+        try:
+            data = self.read_fifo.readline()
+            if data:
+                unpacked = struct.unpack('ffff', eval(data))
+                print(f'Received: { unpacked }')
+                return unpacked
+            else:
+                # No data available at the moment
+                print('Pipe is empty.\nWaiting...')
+        except BlockingIOError:
+            # No data was available for reading
+            pass
+        
+        return None
 
 
 
     def __compute_velocity(self):
-        command = self.read_from_main_fp.read(1) # velocities in roll, pitch, yaw, z
+        command = self.read_from_fifo() # velocities in roll, pitch, yaw, z
 
         if command:
-            self.last_set_velocities = pickle.loads(command)
+            self.last_set_velocities = command
 
         velocities = self.last_set_velocities
 
@@ -217,6 +247,8 @@ class DroneController(Robot):
             # self.__send_state()
 
 
+FIFO_CONTROLLER_READER_PATH = "./pipes/main_to_controller"
+FIFO_CAMERA_WRITER_PATH = "./pipes/camera_to_main"
 
 if __name__ == '__main__':
     # run controller
@@ -224,7 +256,7 @@ if __name__ == '__main__':
     main_to_drone_pipe, drone_to_main_pipe = os.pipe()
     main_to_camera_pipe, camera_to_main_pipe = os.pipe()
 
-    controller = DroneController(main_to_drone_pipe=main_to_drone_pipe, camera_to_main_pipe=camera_to_main_pipe)
+    controller = DroneController(fifo_from_main_path=FIFO_CONTROLLER_READER_PATH, fifo_to_main_path=FIFO_CAMERA_WRITER_PATH)
 
     controller.run()
 

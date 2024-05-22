@@ -4,10 +4,10 @@ import os
 from PIL import Image
 
 class DroneCamera:
-    def __init__(self, drone_node, que_to_main, fps, timestep, folder_path):
+    def __init__(self, drone_node, fifo_to_main_path, fps, timestep, folder_path, if_camera_save=True):
         self.drone_node = drone_node
         self.timestep = timestep
-        self.que_to_main=que_to_main
+        self.fifo_write_path=fifo_to_main_path
 
         #to use gyro first initialize drone, because it enables gyro
         self.gyro = self.drone_node.getDevice('gyro')
@@ -15,6 +15,7 @@ class DroneCamera:
         self.camera = self.drone_node.getDevice('camera')
         self.camera_rate = 1000 // fps
         self.camera.enable(self.camera_rate)
+        self.last_photo_time = -1
 
         self.start_time = self.drone_node.getTime()
         self.image_counter = 0
@@ -63,22 +64,24 @@ class DroneCamera:
         img_with_data = self.capture_image()
         if img_with_data:
             self.save_img(*img_with_data)
-            self.que_to_main.put(img_with_data)
+            # self.que_to_main.put(img_with_data)
 
     def capture_image(self):
         current_time = self.drone_node.getTime()
         elapsed_time = (current_time - self.start_time) * 1000  # Elapsed time in milliseconds
-        image_bytes = self.camera.getImage()
-        self.image_counter += 1
+        if elapsed_time - self.last_photo_time > self.camera_rate:
+            self.last_photo_time = elapsed_time
+            image_bytes = self.camera.getImage()
+            self.image_counter += 1
 
-        try:
-            image_array = np.frombuffer(image_bytes, dtype=np.uint8).reshape((2560, 1960, 4))
-            img = Image.fromarray(image_array[..., [2, 1, 0, 3]], 'RGBA')
-            img = img.convert('RGB')
-            return img, elapsed_time
+            try:
+                image_array = np.frombuffer(image_bytes, dtype=np.uint8).reshape((2560, 1960, 4))
+                img = Image.fromarray(image_array[..., [2, 1, 0, 3]], 'RGBA')
+                img = img.convert('RGB')
+                return img, elapsed_time
 
-        except ValueError as e:
-            print(f"Failed to handle image data: {e}")
+            except ValueError as e:
+                print(f"Failed to handle image data: {e}")
 
     def save_img(self, img, elapsed_time):
         file_path = os.path.join(self.folder_path, f"image_{self.image_counter}.jpg")
