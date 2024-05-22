@@ -224,9 +224,6 @@ if __name__ == '__main__':
     main_to_drone_pipe, drone_to_main_pipe = os.pipe()
     main_to_camera_pipe, camera_to_main_pipe = os.pipe()
 
-    print("main_to_drone_pipe, drone_to_main_pipe: " + str(main_to_drone_pipe) + ", " + str(drone_to_main_pipe))
-    print("main_to_camera_pipe, camera_to_main_pipe: " + str(main_to_camera_pipe) + ", " + str(camera_to_main_pipe))
-
     controller = DroneController(main_to_drone_pipe=main_to_drone_pipe, camera_to_main_pipe=camera_to_main_pipe)
 
     controller.run()
