@@ -1,12 +1,12 @@
 import os
 import fcntl
 import time
-import pickle
+import pickle, struct
 
 FIFO_PATH = "./main_to_controller"
 
 def read_from_fifo_non_blocking():
-    with open(FIFO_PATH, 'r') as fifo:
+    with open(FIFO_PATH, 'r', buffering=1) as fifo:
         # Set the file descriptor to non-blocking mode
         fd = fifo.fileno()
         fl = fcntl.fcntl(fd, fcntl.F_GETFL)
@@ -14,9 +14,10 @@ def read_from_fifo_non_blocking():
 
         while True:
             try:
-                data = fifo.read()
+                data = fifo.readline()
                 if data:
-                    print(f'Received: {pickle.loads(data)}')
+                    unpacked = struct.unpack('ffff', eval(data))
+                    print(f'Received: { unpacked }')
                 else:
                     # No data available at the moment
                     print('Pipe is empty.\nWaiting...')
@@ -26,4 +27,6 @@ def read_from_fifo_non_blocking():
                 time.sleep(1)
 
 if __name__ == '__main__':
+    if not os.path.exists(FIFO_PATH):
+        os.mkfifo(FIFO_PATH)
     read_from_fifo_non_blocking()

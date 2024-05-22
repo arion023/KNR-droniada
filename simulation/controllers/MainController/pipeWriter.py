@@ -1,5 +1,5 @@
 import sys, os, time
-import pickle
+import pickle, struct
 
 FIFO_PATH = "./main_to_controller"
 
@@ -8,7 +8,9 @@ def generate_comands():
         # Set the file descriptor to non-blocking mode
         while True:
             velo = [0., 0., 0., 2.]
-            fifo.write(pickle.dumps(velo))
+            packed_struct = struct.pack('ffff', *velo)
+            print(f'Packed stucture: {packed_struct}')
+            fifo.write((str(packed_struct)))
             fifo.flush()
             time.sleep(10)
 
