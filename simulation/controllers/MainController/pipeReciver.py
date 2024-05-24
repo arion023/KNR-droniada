@@ -7,7 +7,8 @@ FIFO_PATH = "./pipes/main_to_controller"
 WRITE_FIFO_PATH = "./pipes/controller_to_main"
 
 def read_velocities_from_fifo_non_blocking():
-    with open(FIFO_PATH, 'r', buffering=1) as fifo:
+    write_fifo = open(WRITE_FIFO_PATH, 'w')
+    with open(FIFO_PATH, 'rb', buffering=1) as fifo:
         # Set the file descriptor to non-blocking mode
         fd = fifo.fileno()
         fl = fcntl.fcntl(fd, fcntl.F_GETFL)
@@ -15,10 +16,12 @@ def read_velocities_from_fifo_non_blocking():
 
         while True:
             try:
-                data = fifo.readline()
+                data = fifo.readline(16)
                 if data:
-                    unpacked = struct.unpack('ffff', eval(data))
+                    unpacked = struct.unpack('ffff', data)
                     print(f'Received: { unpacked }')
+                    write_fifo.write("OK\n")
+                    write_fifo.flush()
                 else:
                     # No data available at the moment
                     print('Pipe is empty.\nWaiting...')
@@ -29,7 +32,7 @@ def read_velocities_from_fifo_non_blocking():
 
 def read_destinations_from_fifo_non_blocking():
     write_fifo = open(WRITE_FIFO_PATH, 'w')
-    with open(FIFO_PATH, 'r', buffering=1) as fifo:
+    with open(FIFO_PATH, 'rb', buffering=1) as fifo:
         # Set the file descriptor to non-blocking mode
         fd = fifo.fileno()
         fl = fcntl.fcntl(fd, fcntl.F_GETFL)
@@ -37,13 +40,16 @@ def read_destinations_from_fifo_non_blocking():
 
         while True:
             try:
-                data = fifo.readline()
+                data = fifo.read(12)
                 if data:
-                    unpacked = struct.unpack('fff', eval(data))
+                    unpacked = struct.unpack('fff', data)
                     print(f'Received: { unpacked }')
-                    time.sleep(2)
-                    write_fifo.write("RECIVED\n")
+                    write_fifo.write("OK\n")
                     write_fifo.flush()
+                    time.sleep(3)
+                    write_fifo.write("REACHED\n")
+                    write_fifo.flush()
+
                 else:
                     # No data available at the moment
                     print('Pipe is empty.\nWaiting...')
@@ -55,5 +61,5 @@ def read_destinations_from_fifo_non_blocking():
 if __name__ == '__main__':
     if not os.path.exists(FIFO_PATH):
         os.mkfifo(FIFO_PATH)
-    #read_velocities_from_fifo_non_blocking()
+    # read_velocities_from_fifo_non_blocking()
     read_destinations_from_fifo_non_blocking()

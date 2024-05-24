@@ -24,7 +24,7 @@ from enum import Enum
 
 
 
-class RESPONSES(Enum):
+class RESPONSE(Enum):
     REACHED = "REACHED"
     OK = "OK"
 
@@ -182,7 +182,7 @@ class DroneController(Robot):
 
 
     def open_read(self):
-        self.read_fifo = open(self.read_path, 'r', buffering=1)
+        self.read_fifo = open(self.read_path, 'rb')
         # Set the file descriptor to non-blocking mode
         fd = self.read_fifo.fileno()
         fl = fcntl.fcntl(fd, fcntl.F_GETFL)
@@ -201,15 +201,16 @@ class DroneController(Robot):
 
 
     def read_command(self):
-        
-        data_format = 4*'f'
+        length = 4
         if self.command_type==COMMAND_TYPE.DESTINATION:
-            data_format =3*'f'
+            length=3
+        data_format =length*'f'
         try:
-            data = self.read_fifo.readline()
+            data = self.read_fifo.read(length*4)
             if data:
-                unpacked = struct.unpack(data_format, eval(data))
+                unpacked = struct.unpack(data_format, data)
                 print(f'Received: { unpacked }')
+                self.send(RESPONSE.OK.value)
                 return np.array(unpacked)
             else:
                 # No data available at the moment
@@ -283,7 +284,8 @@ class DroneController(Robot):
                     velocities[3] = 0.
             
             if not np.any(velocities):
-                self.send_ok()
+                self.if_reached = True
+                self.send(RESPONSE.REACHED.value)
 
             
             return velocities
@@ -292,11 +294,10 @@ class DroneController(Robot):
             return command
 
 
-    def send_ok(self):
-        self.if_reached = True
-        self.write_fifo.write(RESPONSES.REACHED.value + '\n')
+    def send(self, message):
+        self.write_fifo.write(message + '\n')
         self.write_fifo.flush()
-        print(RESPONSES.REACHED.value)
+        print(message)
 
 
 
@@ -367,6 +368,16 @@ FIFO_CAMERA_READER_PATH = "./pipes/main_to_camera"
 FIFO_CAMERA_WRITER_PATH = "./pipes/camera_to_main"
 
 TYPE_OF_COMMAND = COMMAND_TYPE.DESTINATION
+
+"""Usage of pipes.
+
+DESTINATION TYPE
+
+
+VELOCITY TYPE
+set velocity in 4 axis, write to pipe float vector [y_velocity, x_velocity, rotatation_velocity, altitude_velocity]
+drone will
+"""
 
 if __name__ == '__main__':
     # run controller
