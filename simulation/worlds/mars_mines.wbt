@@ -98,8 +98,8 @@ Mavic2Pro {
   cameraSlot [
     Camera {
       fieldOfView 2.33
-      width 2560
-      height 1960
+      width 1920
+      height 1080
     }
   ]
 }
