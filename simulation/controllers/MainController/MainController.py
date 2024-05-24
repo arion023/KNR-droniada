@@ -372,10 +372,10 @@ TYPE_OF_COMMAND = COMMAND_TYPE.DESTINATION
 """Usage of pipes.
 
 DESTINATION TYPE
-
+set destination, write to pipe flaot vector [x, y, z], wait for reciving communicate from drone OK. After reaching destination drone will response with REACHED.
 
 VELOCITY TYPE
-set velocity in 4 axis, write to pipe float vector [y_velocity, x_velocity, rotatation_velocity, altitude_velocity]
+set velocity in 4 axis, write to pipe float vector [y_velocity, x_velocity, rotatation_velocity, altitude_velocity]. After geting communicate, drone will response with OK.
 drone will
 """
 
