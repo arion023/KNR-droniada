@@ -21,6 +21,9 @@ from webots_drone.utils import encode_image
 from enum import Enum
 
 
+
+
+
 class RESPONSES(Enum):
     REACHED = "REACHED"
     OK = "OK"
@@ -73,7 +76,7 @@ class DroneController(Robot):
         # Initialize Flight Control
         print('Initializing Drone Control...', end=' ')
         self.__drone = Drone(self)
-        self.__camera = DroneCamera(self, read_from_path=camera_read_from_path, write_to_path=camera_write_to_path, fps=10, timestep=self.timestep, folder_path="./images/", if_camera_save=False)
+        self.__camera = DroneCamera(self, read_from_path=camera_read_from_path, write_to_path=camera_write_to_path, fps=FPS, timestep=self.timestep, folder_path=IMAGE_FOLDER, if_camera_save=False)
         self.__time_delta = self.timestep / 1000
         self.__motor_controllers(self.__time_delta)
 
@@ -353,11 +356,17 @@ class DroneController(Robot):
             # self.__send_state()
 
 
+#SETTINGS
+FPS = 1
+IMAGE_FOLDER = "./images/"
+
 FIFO_CONTROLLER_READER_PATH = "./pipes/main_to_controller"
 FIFO_CONTROLLER_WRITER_PATH = "./pipes/controller_to_main"
 
 FIFO_CAMERA_READER_PATH = "./pipes/main_to_camera"
 FIFO_CAMERA_WRITER_PATH = "./pipes/camera_to_main"
+
+TYPE_OF_COMMAND = COMMAND_TYPE.DESTINATION
 
 if __name__ == '__main__':
     # run controller
@@ -366,7 +375,7 @@ if __name__ == '__main__':
         write_to_path=FIFO_CONTROLLER_WRITER_PATH,
         camera_read_from_path=FIFO_CAMERA_READER_PATH,
         camera_write_to_path=FIFO_CAMERA_WRITER_PATH,
-        command_type = COMMAND_TYPE.DESTINATION
+        command_type = TYPE_OF_COMMAND
         )
 
     controller.run()

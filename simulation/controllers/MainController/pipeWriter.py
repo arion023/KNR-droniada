@@ -8,7 +8,7 @@ def generate_velocites():
     
     velocities = [[0., 0., 0., 2.], [0., 0., 0.5, 0.], [0., 0.3, 0., 0.] ]
 
-    with open(FIFO_PATH, 'w') as fifo:
+    with open(WRITE_FIFO_PATH, 'w') as fifo:
         # Set the file descriptor to non-blocking mode
         i = 0
         while True:
@@ -50,7 +50,7 @@ if __name__ == "__main__":
         os.mkfifo(READ_FIFO_PATH)
     if not os.path.exists(WRITE_FIFO_PATH):
         os.mkfifo(WRITE_FIFO_PATH)
-    # generate_velocites()
+    #generate_velocities()
     generate_destinations()
 
 

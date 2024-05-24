@@ -76,7 +76,7 @@ class DroneCamera:
             self.image_counter += 1
 
             try:
-                image_array = np.frombuffer(image_bytes, dtype=np.uint8).reshape((2560, 1960, 4))
+                image_array = np.frombuffer(image_bytes, dtype=np.uint8).reshape((1960, 2560, 4))
                 img = Image.fromarray(image_array[..., [2, 1, 0, 3]], 'RGBA')
                 img = img.convert('RGB')
                 return img, elapsed_time
