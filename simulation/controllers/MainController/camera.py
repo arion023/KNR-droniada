@@ -4,10 +4,11 @@ import os
 from PIL import Image
 
 class DroneCamera:
-    def __init__(self, drone_node, fifo_to_main_path, fps, timestep, folder_path, if_camera_save=True):
+    def __init__(self, drone_node, read_from_path, write_to_path, fps, timestep, folder_path, if_camera_save=True):
         self.drone_node = drone_node
         self.timestep = timestep
-        self.fifo_write_path=fifo_to_main_path
+        self.write_path=write_to_path
+        self.read_path=read_from_path
 
         #to use gyro first initialize drone, because it enables gyro
         self.gyro = self.drone_node.getDevice('gyro')
@@ -87,7 +88,7 @@ class DroneCamera:
         file_path = os.path.join(self.folder_path, f"image_{self.image_counter}.jpg")
         img.save(file_path, 'JPEG', quality=90)
 
-        print(f"Time since start: {int(elapsed_time)} ms")
+        # print(f"Time since start: {int(elapsed_time)} ms")
 
 
 # Użycie klasy Kamera
