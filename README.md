@@ -25,4 +25,4 @@ Start the simulation by clicking the execute button.
 
 ### Controllers short description.
 - The ManualController allows you to control the drone using the arrow keys for directional movement and shift + arrow keys for altitude adjustments. Furthermore, it allows you to control the camera up and down with the 1 and 2 keys, and control camera roll with the A and D keys.
-- ManualController allows you to control the drone with external pipes. More infromation in PipeController.py file.
+- The PipesController allows you to control the drone with external pipes. To run the demo, you need to run simulation/controller/PipesController/pipeWrite.py after or before running the simulation, as the pipes block on opening, causing the simulation to wait for them. More information can be found in the PipeController.py file.
