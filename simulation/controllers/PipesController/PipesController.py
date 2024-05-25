@@ -1,39 +1,79 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Apr 29 23:16:03 2020
+Drone controller which allows infromation exchange using system pipes to set drone velocity or destination point. Drone controller collects photos from camera and saves them to directory given in settings. 
 
+Opening system pipes on linux are blocking function, so to start you need open from both sides all pipes. Pipes paths are defined in settings.
+
+Usage of pipes.
+
+To open all pipes for testing you can run pipeWriter.py from PipesController dir, before running simulation. In pipeWriter you have to set generator function compatible with drone comand types setting.
+
+To test only pipes you can run pipeWriter.py and pipeReciver.py with compatible generator and reader function.
+
+How to set destination in 3D world.
+1. Set TYPE_OF_COMMAND in settings to COMMAND_TYPE.DESTINATION
+2. Write to CONTROLLER_READER pipe flaot vector [x, y, z]. [0, 0, 0] point is always starting position.
+3. If drone will recive float vector, drone will send "OK\n" to the CONTROLLER_WRITER pipe
+4. After reaching destination drone will send "REACHED\n" to the CONTROLLER_WRITER pipe
+
+Before reaching destination point, you can push to pipe new destination point. Drone will change his focus on the new point and start execute procedure from point 3.
+
+How to set velocity in 4 axis.
+1. Set TYPE_OF_COMMAND in settings to COMMAND_TYPE.VELOCITY
+2. Write to CONTROLLER_READER pipe float vector with values [y_velocity, x_velocity, rotatation_velocity, altitude_velocity]. 
+3. If drone will recive float vector, drone will send "OK\n" to the CONTROLLER_WRITER pipe
+
+Coding structure
+To send any vector to drone you should use struct.pack with native encoding and open pipes in binary writing/reading.
+For to send destination point use struct.pack('fff', x, y, z)
+
+Drone response are realized with normal strings, so open pipe in normal reading/writing mode and readline from pipe to retrive response.
+
+Settings below.
+
+Controller based on controller wiritten by
 @author: Angel Ayala <angel4ayala [at] gmail.com>
 """
-import numpy as np
-import pickle
+
+#webots import
 from controller import Robot
-from simple_pid import PID
 
-import os
-import sys
-import struct, fcntl
-
-from drone import Drone
-from camera import DroneCamera
-from webots_drone.utils import encode_image
-
+import os, struct, fcntl
 from enum import Enum
 
+from simple_pid import PID
+import numpy as np
 
-
-
+from Drone import Drone
+from DroneCamera import DroneCamera
 
 class RESPONSE(Enum):
     REACHED = "REACHED"
     OK = "OK"
 
-
-
 class COMMAND_TYPE(Enum):
     NONE = 0
     VELOCITY = 1
     DESTINATION = 2
+
+#SETTINGS
+
+# camera fps
+FPS = 1 
+
+IMAGE_FOLDER = "./images/"
+
+FIFO_CONTROLLER_READER_PATH = "./pipes/main_to_controller"
+FIFO_CONTROLLER_WRITER_PATH = "./pipes/controller_to_main"
+
+FIFO_CAMERA_READER_PATH = "./pipes/main_to_camera"
+FIFO_CAMERA_WRITER_PATH = "./pipes/camera_to_main"
+
+PRECISION = 0.1
+
+TYPE_OF_COMMAND = COMMAND_TYPE.DESTINATION
+
 
 
 def clamp(value, value_min, value_max):
@@ -51,7 +91,7 @@ class DroneController(Robot):
     MAX_YAW_DISTURBANCE = 2
     MAX_PITCH_DISTURBANCE = 2
     # Precision between the target position and the robot position in meters
-    target_precision = 0.1
+    target_precision = PRECISION
 
     def __init__(self, read_from_path, write_to_path, camera_read_from_path, camera_write_to_path, command_type):
         super(DroneController, self).__init__()
@@ -356,28 +396,6 @@ class DroneController(Robot):
             # comms
             # self.__send_state()
 
-
-#SETTINGS
-FPS = 1
-IMAGE_FOLDER = "./images/"
-
-FIFO_CONTROLLER_READER_PATH = "./pipes/main_to_controller"
-FIFO_CONTROLLER_WRITER_PATH = "./pipes/controller_to_main"
-
-FIFO_CAMERA_READER_PATH = "./pipes/main_to_camera"
-FIFO_CAMERA_WRITER_PATH = "./pipes/camera_to_main"
-
-TYPE_OF_COMMAND = COMMAND_TYPE.DESTINATION
-
-"""Usage of pipes.
-
-DESTINATION TYPE
-set destination, write to pipe flaot vector [x, y, z], wait for reciving communicate from drone OK. After reaching destination drone will response with REACHED.
-
-VELOCITY TYPE
-set velocity in 4 axis, write to pipe float vector [y_velocity, x_velocity, rotatation_velocity, altitude_velocity]. After geting communicate, drone will response with OK.
-drone will
-"""
 
 if __name__ == '__main__':
     # run controller

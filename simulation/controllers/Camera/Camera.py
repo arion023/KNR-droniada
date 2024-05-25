@@ -1,5 +1,10 @@
 from controller import Robot, Keyboard
 
+'''
+Controller onyl for camera
+'''
+
+
 # Inicjalizacja robota
 robot = Robot()
 

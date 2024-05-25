@@ -4,6 +4,32 @@ import numpy as np
 import time
 import os
 from PIL import Image
+
+
+"""
+Custom ROS2 Mavic 2 Pro driver
+
+This controller enables controlling mavic manually with keyboard:
+UP_ARROW    - going forward
+DOWN_ARROW  - going backward
+LEFT_ARROW  - going left
+RIGHT_ARROW - going right
+
+SHIFT + UP_ARROW   - increasing altitude
+SHIFT + DWON_ARROW - decreasing altitude
+
+1   - camera down
+2   - camera up
+A   - camera right roll
+D   - camera left roll
+
+Furthermore controller saves images from camera to path_directory.
+"""
+
+
+
+
+
 # Helper functions
 def clamp(value, min_value, max_value):
     return max(min_value, min(value, max_value))
@@ -93,7 +119,7 @@ if __name__ == '__main__':
             try:
                 # Assuming the dimensions are known and correct (400x240)
                 # Notice the change in indexing the channels from BGR to RGB
-                image_array = np.frombuffer(image_bytes, dtype=np.uint8).reshape((420, 784, 4))
+                image_array = np.frombuffer(image_bytes, dtype=np.uint8).reshape((1080, 1920, 4))
                 img = Image.fromarray(image_array[..., [2, 1, 0, 3]], 'RGBA')  # Swap BGR to RGB
                 img = img.convert('RGB')  # Convert to RGB if alpha channel is not needed
 
@@ -133,7 +159,7 @@ if __name__ == '__main__':
         current_roll = roll_sensor.getValue()
 
         key = keyboard.getKey()
-        while key > 0:
+        while key != -1:
             if key == Keyboard.UP:
                 pitch_disturbance = -1.0
             elif key == Keyboard.DOWN:
@@ -167,8 +193,8 @@ if __name__ == '__main__':
                 current_roll -= 0.1
                 camera_roll.setPosition(current_roll)
 
-        # Pobierz kolejny klawisz
-        key = keyboard.getKey()
+            # Pobierz kolejny klawisz
+            key = keyboard.getKey()
 
         #Compute the roll, pitch, yaw and vertical inputs
         roll_input = K_ROLL_P * clamp(roll, -1.0, 1.0) + roll_disturbance
