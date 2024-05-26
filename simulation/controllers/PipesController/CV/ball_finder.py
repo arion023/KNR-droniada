@@ -232,11 +232,11 @@ class BallFinder:
         self.grid = [[{'color': None, 'confidence': 0.0} for _ in range(self.grid_size[1])] for _ in range(self.grid_size[0])]
         self.is_finished = False
 
-    def process_image(self, image_path) -> bool:
+    def process_image(self, image_path) -> dict:
         image = cv2.imread(image_path)
         bounding_boxes, num = get_platforms(image)
         if num !=9:
-            return False
+            return {'status': 'error', 'desc': 'Number of platforms is not 9', 'grid': self.grid}
         colors, confidences = classify_colors(image, bounding_boxes)
         counts = {'blue': 0, 'green': 0, 'red': 0, 'black': 0, 'empty': 0, 'unknown': 0}
         for color in colors:
@@ -246,9 +246,13 @@ class BallFinder:
                 self.grid_dict[i] = color
                 self.grid[i // 3][i % 3] = {'color': color, 'confidence': confidences[i]} 
             self.is_finished = True
-            return True
+            return {'status': 'success', 'desc': 'Grid is filled', 'grid': self.grid}
         else:
-            return False
+            for i, color in enumerate(colors):
+                self.grid_dict[i] = color
+                self.grid[i // 3][i % 3] = {'color': color, 'confidence': confidences[i]}
+            self.is_finished = False
+            return {'status': 'error', 'desc': 'Incorrect colors', 'grid': self.grid}
         
 if __name__ == '__main__':
     finder = BallFinder()
