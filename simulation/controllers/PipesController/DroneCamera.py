@@ -88,6 +88,7 @@ class DroneCamera:
         file_path = os.path.join(self.folder_path, f"image_{self.image_counter}.jpg")
         img.save(file_path, 'JPEG', quality=90)
 
+        return file_path
         # print(f"Time since start: {int(elapsed_time)} ms")
 
 
