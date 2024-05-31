@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Drone controller which allows infromation exchange using system pipes to set drone velocity or destination point. Drone controller collects photos from camera and saves them to directory given in settings. 
+Drone controller which allows infromation exchange using system pipes to set drone velocity or destination point. Drone controller collects photos from camera and saves them to directory given in settings.
 
 Opening system pipes on linux are blocking function, so to start you need open from both sides all pipes. Pipes paths are defined in settings.
 
@@ -21,7 +21,7 @@ Before reaching destination point, you can push to pipe new destination point. D
 
 How to set velocity in 4 axis.
 1. Set TYPE_OF_COMMAND in settings to COMMAND_TYPE.VELOCITY
-2. Write to CONTROLLER_READER pipe float vector with values [y_velocity, x_velocity, rotatation_velocity, altitude_velocity]. 
+2. Write to CONTROLLER_READER pipe float vector with values [y_velocity, x_velocity, rotatation_velocity, altitude_velocity].
 3. If drone will recive float vector, drone will send "OK\n" to the CONTROLLER_WRITER pipe
 
 Coding structure
@@ -45,8 +45,8 @@ from enum import Enum
 from simple_pid import PID
 import numpy as np
 
-from Drone import Drone
-from DroneCamera import DroneCamera
+from Models.Drone import Drone
+from Models.DroneCamera import DroneCamera
 
 class RESPONSE(Enum):
     REACHED = "REACHED"
@@ -60,7 +60,7 @@ class COMMAND_TYPE(Enum):
 #SETTINGS
 
 # camera fps
-FPS = 1 
+FPS = 1
 
 IMAGE_FOLDER = "./images/"
 
@@ -108,7 +108,7 @@ class DroneController(Robot):
         #initialize fifo objects
         self.read_fifo = None
         self.write_fifo = None
-        
+
         self.open_write()
         self.open_read()
 
@@ -227,7 +227,7 @@ class DroneController(Robot):
         fd = self.read_fifo.fileno()
         fl = fcntl.fcntl(fd, fcntl.F_GETFL)
         fcntl.fcntl(fd, fcntl.F_SETFL, fl | os.O_NONBLOCK)
-    
+
 
     def close_read(self):
         self.read_fifo.close()
@@ -259,7 +259,7 @@ class DroneController(Robot):
         except BlockingIOError:
             # No data was available for reading
             pass
-        
+
         return None
 
     def read_velocities(self):
@@ -271,8 +271,8 @@ class DroneController(Robot):
                 self.if_reached=False
                 print('command: ', command)
                 # print('move to target: ', self.move_to_target())
-            
-            
+
+
             if self.if_reached:
                 return [.0, .0, .0, .0]
 
@@ -296,11 +296,11 @@ class DroneController(Robot):
             direction_vector = np.array(self.last_set_destination[0:3]) - np.array(self.current_pose[0:3])
 
             direction_vector =  np.matmul(direction_vector, rotation_matrix)
-            
+
             # print('direction_vector ', direction_vector)
-            
+
             direction_vector = np.insert(direction_vector, 2, angle_left)
-            
+
             velocities = np.array([.0, .0, .0, .0], dtype=float)
 
             for i in range(len(direction_vector)):
@@ -308,10 +308,10 @@ class DroneController(Robot):
                     velocities[i] = direction_vector[i]
                 else:
                     velocities[i] = .0
-            
+
             if(velocities[2] != 0 or velocities[3] != 0):
                 velocities[0] = 0.
-                velocities[1] = 0. 
+                velocities[1] = 0.
                 velocities[2] = np.sign(velocities[2]) * self.MAX_YAW_DISTURBANCE
                 velocities[3] = np.sign(velocities[3]) * 4
             else:
@@ -322,12 +322,12 @@ class DroneController(Robot):
             np.log10(abs(angle_left)), self.MAX_PITCH_DISTURBANCE, 0.1)# velocities[0] / max_velo * 0.1
                     velocities[2] = 0.
                     velocities[3] = 0.
-            
+
             if not np.any(velocities):
                 self.if_reached = True
                 self.send(RESPONSE.REACHED.value)
 
-            
+
             return velocities
 
         elif self.command_type == COMMAND_TYPE.VELOCITY:
@@ -344,11 +344,11 @@ class DroneController(Robot):
     def __compute_velocity(self):
 
         velocities = self.read_velocities() # velocities in roll, pitch, yaw, z
-        
+
         if isinstance(velocities, np.ndarray):
             self.last_set_velocities = velocities
 
-        
+
         # apply disturbances velocities
         pose_disturbance = self.__compute_disturbances(self.last_set_velocities)
         roll_d, pitch_d, yaw_d, thrust_d = pose_disturbance
