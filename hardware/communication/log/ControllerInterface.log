@@ -1,0 +1,7 @@
+20:16:21 - Controller Interface initizalization...
+20:16:21 - Command send to handler. DST [1.0, 2.0, 3.0]
+20:16:21 - Command send to handler. VEL [4.0, 5.0, 6.0]
+20:16:21 - Command send to handler. LND
+20:16:21 - Command send to handler. STR
+20:16:21 - Command send to handler. ROT [3.0]
+20:16:21 - Command send to handler. END

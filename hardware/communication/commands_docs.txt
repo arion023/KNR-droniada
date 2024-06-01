@@ -1,15 +1,16 @@
 COMMANDS
 
-'@DST' x, y, z, checksum flt #destination point
-'@VEL' x, y, z, checksum #velocities
-'@ROT' angle, 0, 0, checksum
-'@LND' 0, 0, 0, checksum
-'@STR' 0, 0, 0, checksum
+'DST' x, y, z, checksum '@'
+'VEL' x, y, z, checksum '@'
+'ROT' angle, 0, 0, checksum '@'
+'LND' 0, 0, 0, checksum '@'
+'STR' 0, 0, 0, checksum '@'
+
 
 
 RESPONSES
 
-'ACK'
-'FIN'
-'UNK'
-'ERR'
+'ACK@'
+'UNK@'
+'FIN@'
+'ERR@'
