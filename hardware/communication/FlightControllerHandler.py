@@ -164,10 +164,12 @@ class FlightControllerHandler:
         self.logger.addHandler(file_handler)
 
     def __pack(self, cmd, values):
-        checksum=float('0.0')
-        cmd_bytes = ('@' + cmd).encode('utf-8')
+        checksum=int(0)
+        cmd_bytes = cmd.encode('utf-8')
+        endcommand = '@'
+        endcommand = endcommand.encode('utf-8')
         #command formats = @ CMD XYZ CHECKSUM
-        return struct.pack('>bbbbffff', *cmd_bytes, *values, checksum)
+        return struct.pack('>bbbfffib', *cmd_bytes, *values, checksum, *endcommand)
 
     def __unpack(self, data):
         #command formats = CMD @
