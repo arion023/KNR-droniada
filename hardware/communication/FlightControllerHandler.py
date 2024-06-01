@@ -52,14 +52,14 @@ class MockSerial():
 
 
 class FlightControllerInterface():
-    def __init__(self):
+    def __init__(self, mock=False):
 
         self.set_up_logger()
         self.logger.info("Controller Interface initizalization...")
 
         self.command_que = Queue()
 
-        self.handler_thread = Thread(target=FlightControllerHandler, args=(self.command_que, ))
+        self.handler_thread = Thread(target=FlightControllerHandler, args=(self.command_que, mock))
         self.handler_thread.start()
 
 
@@ -137,19 +137,21 @@ class FlightControllerInterface():
 
 
 class FlightControllerHandler:
-    def __init__(self, command_que):
+    def __init__(self, command_que, mock=False):
 
         self.set_up_logger()
         self.logger.info('Handler initialization.')
 
         self.command_que = command_que
-        self.serial_bus = MockSerial()
-        # self.serial_bus = serial.Serial(port='/dev/ttyAMA0',
-        #                                 baudrate=57600,
-        #                                 parity=serial.PARITY_NONE,
-        #                                 stopbits=serial.STOPBITS_ONE,
-        #                                 bytesize=serial.EIGHTBITS,
-        #                                 timeout=1)
+        if mock:
+            self.serial_bus = MockSerial()
+        else:
+            self.serial_bus = serial.Serial(port='/dev/ttyAMA0',
+                                        baudrate=57600,
+                                        parity=serial.PARITY_NONE,
+                                        stopbits=serial.STOPBITS_ONE,
+                                        bytesize=serial.EIGHTBITS,
+                                        timeout=1)
         if not self.serial_bus.isOpen():
             self.serial_bus.open()
 
@@ -247,7 +249,8 @@ if __name__ == "__main__":
 
     #example of how to use code, output will be logged in log directory
     #run this code from communication directory
-    controller = FlightControllerInterface()
+    #if you have doesn't configured serial bus in code, use mock=True, and create mock directory, this will write to file in this directory
+    controller = FlightControllerInterface(mock=True)
     controller.goto_point(1., 2., 3.)
     controller.move(4., 5., 6.)
     controller.land()
