@@ -18,88 +18,6 @@ class CommunicationStatus(Enum):
     IN_PROGRESS = 1
 
 
-class FlightControllerInterface():
-    def __init__(self, que):
-
-        self.set_up_logger()
-        self.logger.info("Controller Interface initizalization...")
-
-        self.que = que
-        # self.communication_handler = ControllerSerialHandler(self.que)
-
-    def set_up_logger(self):
-        self.logger = logging.getLogger("FlightControllerInterfaceLogger")
-        self.logger.setLevel(logging.INFO)
-        file_handler = logging.FileHandler('./log/FlightControllerInterface.log')
-        formatter = logging.Formatter('%(asctime)s - %(message)s', datefmt='%H:%M:%S')
-        file_handler.setFormatter(formatter)
-        self.logger.addHandler(file_handler)
-
-    def goto_point(self, x, y, z):
-        cmd = 'DST'
-        values = [x, y, z]
-
-        if not self.__validate_values(values):
-            return
-
-        self.que.put_nowait((cmd, values))
-        self.logger.info(f'Command send to handler. {cmd} {values}')
-
-    def move(self, x_vel, y_vel, z_vel):
-        cmd = 'VEL'
-
-        values = [x_vel, y_vel, z_vel]
-
-        if not self.__validate_values(values):
-            return
-
-        self.que.put_nowait((cmd, values))
-        self.logger.info(f'Command send to handler. {cmd} {values}')
-
-
-    def land(self):
-        cmd = 'LND'
-
-        self.que.put_nowait((cmd, []))
-        self.logger.info(f'Command send to handler. {cmd}')
-
-
-    def start(self):
-        cmd = 'STR'
-
-        self.que.put_nowait((cmd, []))
-        self.logger.info(f'Command send to handler. {cmd}')
-
-
-    def rotate(self, angle):
-        cmd = 'ROT'
-        values = [angle]
-
-        if not self.__validate_values(values):
-            return
-
-        self.que.put_nowait((cmd, values))
-        self.logger.info(f'Command send to handler. {cmd} {values}')
-
-
-    def terminate_handler(self):
-        cmd = 'END'
-
-        self.que.put_nowait((cmd, []))
-        self.logger.info(f'Command send to handler. {cmd}')
-
-
-    def __validate_values(self, values):
-        for f in values:
-            if not isinstance(f, float):
-                self.logger.info('Error: input values must be floats')
-                return False
-        return True
-
-    # def __del__(self):
-    #     self.handler_thread.join()
-
-
 class MockSerial():
     def __init__(self, *values):
         self.mock_path = SERIAL_MOCK_WRITER
@@ -132,6 +50,90 @@ class MockSerial():
     def flush(self):
         pass
 
+
+class FlightControllerInterface():
+    def __init__(self):
+
+        self.set_up_logger()
+        self.logger.info("Controller Interface initizalization...")
+
+        self.command_que = Queue()
+
+        self.handler_thread = Thread(target=FlightControllerHandler, args=(self.command_que, ))
+        self.handler_thread.start()
+
+
+    def set_up_logger(self):
+        self.logger = logging.getLogger("FlightControllerInterfaceLogger")
+        self.logger.setLevel(logging.INFO)
+        file_handler = logging.FileHandler('./log/FlightControllerInterface.log')
+        formatter = logging.Formatter('%(asctime)s - %(message)s', datefmt='%H:%M:%S')
+        file_handler.setFormatter(formatter)
+        self.logger.addHandler(file_handler)
+
+    def goto_point(self, x, y, z):
+        cmd = 'DST'
+        values = [x, y, z]
+
+        if not self.__validate_values(values):
+            return
+
+        self.command_que.put_nowait((cmd, values))
+        self.logger.info(f'Command send to handler. {cmd} {values}')
+
+    def move(self, x_vel, y_vel, z_vel):
+        cmd = 'VEL'
+
+        values = [x_vel, y_vel, z_vel]
+
+        if not self.__validate_values(values):
+            return
+
+        self.command_que.put_nowait((cmd, values))
+        self.logger.info(f'Command send to handler. {cmd} {values}')
+
+
+    def land(self):
+        cmd = 'LND'
+
+        self.command_que.put_nowait((cmd, []))
+        self.logger.info(f'Command send to handler. {cmd}')
+
+
+    def start(self):
+        cmd = 'STR'
+
+        self.command_que.put_nowait((cmd, []))
+        self.logger.info(f'Command send to handler. {cmd}')
+
+
+    def rotate(self, angle):
+        cmd = 'ROT'
+        values = [angle]
+
+        if not self.__validate_values(values):
+            return
+
+        self.command_que.put_nowait((cmd, values))
+        self.logger.info(f'Command send to handler. {cmd} {values}')
+
+
+    def terminate_handler(self):
+        cmd = 'END'
+
+        self.command_que.put_nowait((cmd, []))
+        self.logger.info(f'Command send to handler. {cmd}')
+
+
+    def __validate_values(self, values):
+        for f in values:
+            if not isinstance(f, float):
+                self.logger.info('Error: input values must be floats')
+                return False
+        return True
+
+    def __del__(self):
+        self.handler_thread.join()
 
 
 class FlightControllerHandler:
@@ -238,8 +240,12 @@ class FlightControllerHandler:
                 status = self.__handle_response(cmd)
             status = False
 
-def test(q):
-    controller = FlightControllerInterface(q)
+
+if __name__ == "__main__":
+
+    #example of how to use code, output will be logged in log directory
+    #run this code from communication directory
+    controller = FlightControllerInterface()
     controller.goto_point(1., 2., 3.)
     controller.move(4., 5., 6.)
     controller.land()
@@ -247,18 +253,5 @@ def test(q):
     controller.rotate(3.)
     controller.terminate_handler()
 
-
-
-if __name__ == "__main__":
-
-    q = Queue()
-    handler_thread = Thread(target=FlightControllerHandler, args=(q, ))
-    interface_thread = Thread(target=test, args=(q, ))
-
-    handler_thread.start()
-    interface_thread.start()
-
-    handler_thread.join()
-    interface_thread.join()
 
 
