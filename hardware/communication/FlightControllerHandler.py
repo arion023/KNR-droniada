@@ -18,7 +18,7 @@ class CommunicationStatus(Enum):
     IN_PROGRESS = 1
 
 
-class ControllerHandlerInterface():
+class FlightControllerInterface():
     def __init__(self, que):
 
         self.set_up_logger()
@@ -28,9 +28,9 @@ class ControllerHandlerInterface():
         # self.communication_handler = ControllerSerialHandler(self.que)
 
     def set_up_logger(self):
-        self.logger = logging.getLogger("ControllerInterfaceLogger")
+        self.logger = logging.getLogger("FlightControllerInterfaceLogger")
         self.logger.setLevel(logging.INFO)
-        file_handler = logging.FileHandler('./log/ControllerInterface.log')
+        file_handler = logging.FileHandler('./log/FlightControllerInterface.log')
         formatter = logging.Formatter('%(asctime)s - %(message)s', datefmt='%H:%M:%S')
         file_handler.setFormatter(formatter)
         self.logger.addHandler(file_handler)
@@ -134,7 +134,7 @@ class MockSerial():
 
 
 
-class ControllerSerialHandler:
+class FlightControllerHandler:
     def __init__(self, command_que):
 
         self.set_up_logger()
@@ -154,9 +154,9 @@ class ControllerSerialHandler:
         self.run()
 
     def set_up_logger(self):
-        self.logger = logging.getLogger("ControllerSerialHandlerLogger")
+        self.logger = logging.getLogger("FlightControllerHandlerLogger")
         self.logger.setLevel(logging.INFO)
-        file_handler = logging.FileHandler('./log/ControllerSerialHandler.log')
+        file_handler = logging.FileHandler('./log/FlightControllerHandler.log')
         formatter = logging.Formatter('%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
         file_handler.setFormatter(formatter)
         self.logger.addHandler(file_handler)
@@ -165,8 +165,6 @@ class ControllerSerialHandler:
         checksum=float('0.0')
         cmd_bytes = ('@' + cmd).encode('utf-8')
         #command formats = @ CMD XYZ CHECKSUM
-        print(cmd)
-        print(values)
         return struct.pack('>bbbbffff', *cmd_bytes, *values, checksum)
 
     def __unpack(self, data):
@@ -231,15 +229,17 @@ class ControllerSerialHandler:
         status = False
         cmd=''
         values=[]
-        while(cmd!='END'):
+        while(True):
             cmd, values = self.__get_command()
+            if cmd == 'END':
+                break
             while(status==False):
                 self.__send_command(cmd, values)
                 status = self.__handle_response(cmd)
             status = False
 
 def test(q):
-    controller = ControllerHandlerInterface(q)
+    controller = FlightControllerInterface(q)
     controller.goto_point(1., 2., 3.)
     controller.move(4., 5., 6.)
     controller.land()
@@ -252,10 +252,13 @@ def test(q):
 if __name__ == "__main__":
 
     q = Queue()
-    handler_thread = Thread(target=ControllerSerialHandler, args=(q, ))
+    handler_thread = Thread(target=FlightControllerHandler, args=(q, ))
     interface_thread = Thread(target=test, args=(q, ))
 
     handler_thread.start()
     interface_thread.start()
+
+    handler_thread.join()
+    interface_thread.join()
 
 
