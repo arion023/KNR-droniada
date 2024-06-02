@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status piłek</title>
+    <style>
+        .light {
+            width: 30px;
+            height: 30px;
+            border-radius: 15px;
+            display: inline-block;
+            margin: 5px;
+        }
+        .green {
+            background-color: green;
+        }
+        .red {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lights Status</h1>
+    <div>
+        {% for light in lights %}
+            <div class="light {{ 'green' if light else 'red' }}"></div>
+        {% endfor %}
+    </div>
+
+<!--mapka-->
+  <h1>Mapa</h1>
+    <div id="map"></div>
+    <script>
+        function initMap() {
+            var location = {lat: -34.397, lng: 150.644}; // Default coordinates
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 8,
+                center: location
+            });
+            var marker = new google.maps.Marker({
+                position: location,
+                map: map
+            });
+        }
+    </script>
+
+<img src="{{ url_for('static', filename='fota.png') }}" alt="Descriptive Alt Text" style="width:100%; max-width:600px;">
+
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg0kiNms8RkZXJEKtVHvEensiMrYIUUi0&callback=initMap">
+    </script>
+
+
+
+</body>
+</html>
