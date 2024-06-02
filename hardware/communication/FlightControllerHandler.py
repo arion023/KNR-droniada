@@ -153,7 +153,7 @@ class FlightControllerHandler:
         if mock:
             self.serial_bus = MockSerial()
         else:
-            self.serial_bus = serial.Serial(port='/dev/ttyAMA0',
+            self.serial_bus = serial.Serial(port='/dev/tty0',
                                         baudrate=57600,
                                         parity=serial.PARITY_NONE,
                                         stopbits=serial.STOPBITS_ONE,
@@ -208,9 +208,13 @@ class FlightControllerHandler:
             time.sleep(waiting_step)
             timeout-=waiting_step
             response_frame = self.serial_bus.read_until('@'.encode('utf-8'))
-        response = self.__unpack(response_frame)
-        self.logger.info(f'Recived response: {response}')
-        return response
+        if response_frame:
+            response = self.__unpack(response_frame)
+            self.logger.info(f'Recived response: {response}')
+            return response
+        else:
+            self.logger.info(f'Doesn\'t recived response.')
+            return None
 
     def __get_command(self):
         self.logger.info('Waiting for command from que...')
@@ -230,7 +234,7 @@ class FlightControllerHandler:
         return cmd, values
 
     def __handle_response(self, cmd):
-        response = self.__get_response(timeout=5)
+        response = self.__get_response(timeout=1)
         if response=='ACK':
             if cmd != 'DST':
                 return True
@@ -261,13 +265,16 @@ if __name__ == "__main__":
     #example of how to use code, output will be logged in log directory
     #run this code from communication directory
     #if you have doesn't configured serial bus in code, use mock=True, and create mock directory, this will write to file in this directory
-    mock_responses = ['DST@', 'UNK@', 'UNK@', 'ACK@', 'ACK@']
+    mock_responses = ['ACK@', 'ACK@', 'ACK@', 'ACK@', 'ACK@']
 
-    interface = FlightControllerInterface(mock=True, mock_responses=mock_responses)
+    interface = FlightControllerInterface(mock=False, mock_responses=mock_responses)
     interface.run_handler()
 
-    interface.goto_point(1., 2., 3.)
     interface.move(2., 2., 3.)
     interface.move(3., 2., 3.)
     interface.move(4., 2., 3.)
+    interface.move(5., 2., 3.)
+    interface.move(6., 2., 3.)
+
+
     interface.terminate_handler()
