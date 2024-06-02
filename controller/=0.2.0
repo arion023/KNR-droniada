@@ -1,7 +1,0 @@
-Looking in indexes: https://pypi.org/simple, https://www.piwheels.org/simple
-Collecting ffmpeg-python
-  Downloading https://www.piwheels.org/simple/ffmpeg-python/ffmpeg_python-0.2.0-py3-none-any.whl (25 kB)
-Collecting future
-  Downloading https://www.piwheels.org/simple/future/future-1.0.0-py3-none-any.whl (491 kB)
-Installing collected packages: future, ffmpeg-python
-Successfully installed ffmpeg-python-0.2.0 future-1.0.0

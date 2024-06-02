@@ -1,7 +1,7 @@
 from CV import BallFinder
 import sys, os, time
 import pickle, struct
-from CV import BallFinder
+
 
 WRITE_FIFO_PATH = "./pipes/main_to_controller"
 READ_FIFO_PATH = "./pipes/controller_to_main"
