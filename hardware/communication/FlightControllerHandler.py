@@ -25,13 +25,11 @@ class MockSerial():
         self.is_open = False
 
         self.response_que = Queue()
-        self.response_que.put('ACK@')
-        self.response_que.put('FIN@')
-        self.response_que.put('ACK@')
-        self.response_que.put('ACK@')
-        self.response_que.put('ACK@')
-        self.response_que.put('ACK@')
 
+
+    def load_mock_responses(self, responses):
+        for r in responses:
+            self.response_que.put(r)
 
     def write(self, data):
         self.mock_fp.write(str(data) + '\n')
@@ -52,16 +50,24 @@ class MockSerial():
 
 
 class FlightControllerInterface():
-    def __init__(self, mock=False):
+    def __init__(self, mock=False, mock_responses=[]):
 
         self.set_up_logger()
         self.logger.info("Controller Interface initizalization...")
 
         self.command_que = Queue()
 
-        self.handler_thread = Thread(target=FlightControllerHandler, args=(self.command_que, mock))
+        self.controller_handler= FlightControllerHandler(self.command_que, mock)
+        if mock:
+            self.controller_handler.load_mock_responses(mock_responses)
+
+
+    def run_handler(self):
+        self.handler_thread = Thread(target=self.controller_handler.run, args=())
         self.handler_thread.start()
 
+    def get_controller_handler(self):
+        return self.controller_handler
 
     def set_up_logger(self):
         self.logger = logging.getLogger("FlightControllerInterfaceLogger")
@@ -142,6 +148,7 @@ class FlightControllerHandler:
         self.set_up_logger()
         self.logger.info('Handler initialization.')
 
+        self.mock = mock
         self.command_que = command_que
         if mock:
             self.serial_bus = MockSerial()
@@ -155,7 +162,11 @@ class FlightControllerHandler:
         if not self.serial_bus.isOpen():
             self.serial_bus.open()
 
-        self.run()
+    def load_mock_responses(self, responses):
+        if self.mock:
+            self.serial_bus.load_mock_responses(responses)
+        else:
+            print("Error: controller is set as non-mock")
 
     def set_up_logger(self):
         self.logger = logging.getLogger("FlightControllerHandlerLogger")
@@ -250,13 +261,13 @@ if __name__ == "__main__":
     #example of how to use code, output will be logged in log directory
     #run this code from communication directory
     #if you have doesn't configured serial bus in code, use mock=True, and create mock directory, this will write to file in this directory
-    controller = FlightControllerInterface(mock=True)
-    controller.goto_point(1., 2., 3.)
-    controller.move(4., 5., 6.)
-    controller.land()
-    controller.start()
-    controller.rotate(3.)
-    controller.terminate_handler()
+    mock_responses = ['DST@', 'UNK@', 'UNK@', 'ACK@', 'ACK@']
 
+    interface = FlightControllerInterface(mock=True, mock_responses=mock_responses)
+    interface.run_handler()
 
-
+    interface.goto_point(1., 2., 3.)
+    interface.move(2., 2., 3.)
+    interface.move(3., 2., 3.)
+    interface.move(4., 2., 3.)
+    interface.terminate_handler()
