@@ -2,9 +2,9 @@ import RPi.GPIO as GPIO
 from time import sleep
 
 class Gripper:
-    pin1 = 11
-    pin2 = 23
-    pin_pwm = 32
+    pin1 = 17
+    pin2 = 27
+    pin_pwm = 12
     
     def __init__(self):
         self.gripped = False

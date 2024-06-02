@@ -31,8 +31,11 @@ def find_balls_img(img):
 
 def test_camera_controller():
     camera_controller_obj = CameraController()
-    camera_controller_obj.look_up()
-    camera_controller_obj.look_down()
+    #patrzy w dół
+    camera_controller_obj.set_angle(33)
+    #patrzy do przodu pod kątem lekko w dół
+    camera_controller_obj.set_angle(-25)
+    
 
     # try:
     #     # Run the CameraController.py script
