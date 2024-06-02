@@ -2,69 +2,100 @@ from gpiozero import AngularServo
 from time import sleep
 from gpiozero import Device
 from gpiozero.pins.pigpio import PiGPIOFactory
+#import ffmpeg
+import numpy as np
+from PIL import Image
+import io
+import os
+
 Device.pin_factory = PiGPIOFactory()
-
-
-#zakres katow, <90, -25>
-#maksymalnie do dolu = 90 stopni
-#maksymalnie do przodu = -25 stopni
-#prostopadle do podloza, okolo 70,65 stopni, jesli bedzie potrzebne to jeszcze ten kat do znalezienia eksperymentalnie
-#wtedy zmienic funckje look_down_perpendicular
 
 class CameraController:
     def __init__(self):
         self.servo = AngularServo(18, min_angle=-90, max_angle=90, min_pulse_width=0.0005, max_pulse_width=0.0025)
         self.min_angle = -25
         self.max_angle = 90
+        self.current_angle = 0  # Assume starting at 0 degrees
+        self.image_folder = 'images'
+        if not os.path.exists(self.image_folder):
+            os.makedirs(self.image_folder)
 
     def go_up(self):
-        if self.servo.angle - 0.5 >= self.min_angle:
-            self.servo.angle -= 0.5
+        if self.current_angle - 0.5 >= self.min_angle:
+            self.current_angle -= 0.5
         else:
-            self.servo.angle = self.min_angle
-        print("aktualny kąt:" + str(self.servo.angle))
-        return self.servo.angle
+            self.current_angle = self.min_angle
+        self.servo.angle = self.current_angle
+        print("aktualny kąt:" + str(self.current_angle))
+        self.take_picture()
+        return self.current_angle
 
     def go_down(self): 
-        if self.servo.angle + 0.5 <= self.max_angle:
-            self.servo.angle += 0.5
+        if self.current_angle + 0.5 <= self.max_angle:
+            self.current_angle += 0.5
         else:
-            self.servo.angle = self.max_angle
-        print("aktualny kąt:" + str(self.servo.angle))
-        return self.servo.angle
+            self.current_angle = self.max_angle
+        self.servo.angle = self.current_angle
+        print("aktualny kąt:" + str(self.current_angle))
+        self.take_picture()
+        return self.current_angle
 
     def look_down(self): 
-        self.servo.angle = 90
-        print("aktualny kąt:" + str(self.servo.angle))
-        return self.servo.angle
+        self.current_angle = 90
+        self.servo.angle = self.current_angle
+        print("aktualny kąt:" + str(self.current_angle))
+        self.take_picture()
+        return self.current_angle
     
     def look_down_perpendicular(self): 
-        self.servo.angle = 65
-        print("aktualny kąt:" + str(self.servo.angle))
-        return self.servo.angle
+        self.current_angle = 65
+        self.servo.angle = self.current_angle
+        print("aktualny kąt:" + str(self.current_angle))
+        self.take_picture()
+        return self.current_angle
     
     def look_up(self): 
-        self.servo.angle = -25
-        print("aktualny kąt:" + str(self.servo.angle))
-        return self.servo.angle
+        self.current_angle = -25
+        self.servo.angle = self.current_angle
+        print("aktualny kąt:" + str(self.current_angle))
+        self.take_picture()
+        return self.current_angle
 
     def set_angle(self, x):
         if x < self.min_angle:
-            self.servo.angle = self.min_angle
+            self.current_angle = self.min_angle
         elif x > self.max_angle:
-            self.servo.angle = self.max_angle
+            self.current_angle = self.max_angle
         else:
-            self.servo.angle = x
-        print("aktualny kąt:" + str(self.servo.angle))
-        return self.servo.angle
+            self.current_angle = x
+        self.servo.angle = self.current_angle
+        print("aktualny kąt:" + str(self.current_angle))
+        self.take_picture()
+        return self.current_angle
     
     def max_positions_test(self):
-        while (True):
-            servo.set_angle(90)
-            sleep(2)
-            servo.set_angle(-25)
-            sleep(2)
+        #while True:
+        self.set_angle(33)
+        sleep(1)
+        self.set_angle(-25)
+        #sleep(2)
 
+    def take_picture(self):
+        print(f"Taking picture at angle: {self.current_angle}")
+    #     try:
+    #         stream_url = 'http://localhost:8080/?action=stream'
+    #         out, _ = (
+    #             ffmpeg
+    #             .input(stream_url)
+    #             .output('pipe:', vframes=1, format='image2', vcodec='mjpeg')
+    #             .run(capture_stdout=True, capture_stderr=True)
+    #         )
+    #         image_np = np.frombuffer(out, np.uint8)
+    #         image = Image.open(io.BytesIO(image_np))
+    #         image.save(os.path.join(self.image_folder, f'output_{self.current_angle}.jpg'))
+    #     except ffmpeg.Error as e:
+    #         print("ffmpeg error:", e.stderr.decode('utf8'))
 
-servo = CameraController()
-servo.max_positions_test()
+if __name__ == "__main__":
+    servo = CameraController()
+    servo.max_positions_test()
