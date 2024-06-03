@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <common/mavlink.h>
-#include <cmath>
+// #include <cmath>
 
 // Obsluga mavlink
 void MavRequestData();
@@ -37,7 +37,7 @@ HardwareSerial mavlinkSerial(PA3, PA2); // RX TX
 HardwareSerial Serial3(PB7, PB6); // RX TX
 
 unsigned long int previousMillis = 0L;
-unsigned long int INTERVAL = 10L;
+unsigned long int INTERVAL = 5000L;
 unsigned long modeChangeMillis = 0L;
 const unsigned long MODE_CHANGE_INTERVAL = 10000L; // 10 seconds
 
@@ -103,11 +103,19 @@ void loop() {
 
     // automat();
     // testAutomat();
-
-      MavRequestData();
-      receiveMavlink();
-      readFromRaspi();
+  Serial3.print("ACK@");
+  // Serial.println(Serial3.available());
+  // while (true) {//(Serial3.available() > 0) {
+  //   // Serial.println(Serial3.available());
+  //   int x = Serial3.read();
+  //   Serial.println(x);
+  // delay(1000);
   }
+
+  //     MavRequestData();
+  //     receiveMavlink();
+  //     readFromRaspi();
+  // }
 }
 
 
@@ -583,6 +591,7 @@ float reverseFloat(const float inFloat) {
 void clearSerialBuffer() {
   while (mavlinkSerial.available() > 0) {
     mavlinkSerial.read();
+    Serial3.read();
   }
 }
 
