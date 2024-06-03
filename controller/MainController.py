@@ -1,8 +1,10 @@
 from GripperController import GripperController
 from CameraController import CameraController
+from CV import BallFinder
 #import FlightControllerInterface
 import subprocess
 import time
+from time import sleep
 
 def run_mission():
     
@@ -27,24 +29,28 @@ def find_balls_img(img):
     pass
 
 
-# testy jednostkowe połączenia z każdym z peryferiów
-def test_reading_reflection_sensor():
-    pass
 
-def test_rotate_camera():
-    try:
-        # Run the CameraController.py script
-        subprocess.run(['python3', 'CameraController.py'], check=True)
-    except subprocess.CalledProcessError as e:
-        print(f"Error running CameraController.py: {e}")
+def test_camera_controller():
+    # inicjalizacja obiektu
+    camera_controller_obj = CameraController()
+    
+    # patrzy w dół
+    camera_controller_obj.set_angle(33)
+    # sleep żeby miało czas się ruszyć
+    sleep(0.2)
+    # strzel fote
+    camera_controller_obj.take_picture()
 
-def test_importu():
+    #patrzy do przodu pod kątem lekko w dół
+    camera_controller_obj.set_angle(-25)
+    sleep(0.2)
+    camera_controller_obj.take_picture()
+
+def test_gripper_controller():
     gripper_controller = GripperController()
     gripper_controller.get_distance_claw_sensor()
+    pass
 
 if __name__ == "__main__":
-    while True:
-        test_importu()
-        time.sleep(1)  # Add a delay if needed to prevent rapid execution
-        test_rotate_camera()
-        time.sleep(1)  # Add a delay if needed to prevent rapid execution
+    test_camera_controller()
+    # test_camera_pic()
