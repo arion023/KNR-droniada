@@ -41,3 +41,6 @@ class Gripper:
 gripper = Gripper()
 # Wywołanie testu
 gripper.test()
+
+# Czyszczenie pinów GPIO po zakończeniu programu
+GPIO.cleanup()
