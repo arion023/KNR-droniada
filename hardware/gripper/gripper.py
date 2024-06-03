@@ -4,14 +4,19 @@ from time import sleep
 class Gripper:
     pin1 = 17
     pin2 = 27
-    pin_pwm = 12
+    pin_pwm = 22
     
     def __init__(self):
         self.gripped = False
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.pin1, GPIO.OUT)
         GPIO.setup(self.pin2, GPIO.OUT)
+        GPIO.setup(self.pin_pwm, GPIO.OUT)
 
+        # Konfiguracja PWM
+        self.pwm = GPIO.PWM(self.pin_pwm, 1000)  # Ustawienie częstotliwości PWM na 1 kHz
+        self.pwm.start(100)  # Uruchomienie PWM z wypełnieniem 100% (wartość 1)
+    
     def open_grip(self):
         GPIO.output(self.pin1, GPIO.HIGH)
         GPIO.output(self.pin2, GPIO.LOW) 
@@ -37,10 +42,16 @@ class Gripper:
             self.close_grip()
             sleep(1)  # Poczekaj chwilę
 
+    def cleanup(self):
+        self.pwm.stop()
+        GPIO.cleanup()
+
 # Inicjalizacja obiektu klasy Gripper
 gripper = Gripper()
-# Wywołanie testu
-gripper.test()
 
-# Czyszczenie pinów GPIO po zakończeniu programu
-GPIO.cleanup()
+try:
+    # Wywołanie testu
+    gripper.test()
+except KeyboardInterrupt:
+    # Czyszczenie pinów GPIO po zakończeniu programu
+    gripper.cleanup()

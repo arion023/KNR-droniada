@@ -1,3 +1,4 @@
+from time import sleep
 import sys
 import os
 import RPi.GPIO as GPIO
@@ -7,6 +8,11 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from lib.DFRobot_TMF8x01 import DFRobot_TMF8701 as tof
 
 tof = tof(enPin = -1, intPin = -1, bus_id = 1)
+
+# piny do grippera
+pin1 = 17
+pin2 = 27
+pin_pwm = 12
 
 # # Ustawienia pinów
 # pin_pwm = 12  # pin PWM (można zmienić na dowolny obsługujący PWM)
@@ -27,7 +33,37 @@ tof = tof(enPin = -1, intPin = -1, bus_id = 1)
 class GripperController:
     def __init__(self):
         pass
+    
+        def __init__(self):
+        self.gripped = False
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.pin1, GPIO.OUT)
+        GPIO.setup(self.pin2, GPIO.OUT)
 
+    def open_grip(self):
+        GPIO.output(self.pin1, GPIO.HIGH)
+        GPIO.output(self.pin2, GPIO.LOW) 
+        self.gripped = True
+        print('close')
+        sleep(1)  # Obrót silnika o pół obrotu w jedną stronę
+        GPIO.output(self.pin1, GPIO.LOW)
+        GPIO.output(self.pin2, GPIO.LOW)
+
+    def close_grip(self):
+        GPIO.output(self.pin1, GPIO.LOW)
+        GPIO.output(self.pin2, GPIO.HIGH)
+        self.gripped = False
+        print('open')
+        sleep(1)  # Obrót silnika o pół obrotu w drugą stronę
+        GPIO.output(self.pin1, GPIO.LOW)
+        GPIO.output(self.pin2, GPIO.LOW)
+    
+    def test(self):
+        while True:
+            self.open_grip()
+            sleep(1)  # Poczekaj chwilę
+            self.close_grip()
+            sleep(1)  # Poczekaj chwilę
     # def open_claw(self):
     #     """
     #     Obrót silnika DC o pół obrotu w jednym kierunku.
@@ -60,12 +96,14 @@ class GripperController:
         # print("Unique ID: %X" % tof.get_unique_id())
         # print("Model: ", tof.get_sensor_model())
         
-        tof.start_measurement(calib_m=tof.eMODE_CALIB, mode=tof.ePROXIMITY)
+        for i in range(100):
+            tof.start_measurement(calib_m=tof.eMODE_CALIB, mode=tof.ePROXIMITY)
+            tof.is_data_ready() == True 
+            print("Distance = %d mm" % tof.get_distance_mm())    
+        #while True:    
+        #if tof.is_data_ready():    
+        return tof.get_distance_mm()
         
-        #while True:
-        #if tof.is_data_ready():
-        tof.is_data_ready() == True
-        print("Distance = %d mm" % tof.get_distance_mm())
 
     def test_importu(self):
         print("test importu")

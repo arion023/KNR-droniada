@@ -9,6 +9,14 @@ import io
 import os
 import ffmpeg
 
+'''
+Servo kable:
+ niebieski GND
+ czerwony 5V 
+ zielony na GPIO 18
+
+ Kamera: USB 
+'''
 
 Device.pin_factory = PiGPIOFactory()
 
