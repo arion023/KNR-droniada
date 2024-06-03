@@ -3,7 +3,8 @@ ODPALIĆ:
 ./setup.sh &
 
 
-# pobranie libek
+# pobranie libek i stworzenie python virtual enviroment(venv)
+python3 -m venv myenv
 pip install -r REQUIREMENTS.txt
 # aktywacja protokołów
 sudo raspi-config --> Interface Options --> I2C,SPI,Serial Port, Remote GPIO na YES
