@@ -72,6 +72,8 @@ class GripperController:
 
 
 if __name__ == "__main__":
-    gripper = GripperController()
-    #gripper.open_claw()
-    gripper.get_distance_claw_sensor()
+    try:
+        gripper = GripperController()
+        gripper.get_distance_claw_sensor()
+    finally:
+        GPIO.cleanup()

@@ -4,3 +4,5 @@ Pillow
 RPi.GPIO
 smbus
 pigpio
+opencv-python
+ffmpeg-python

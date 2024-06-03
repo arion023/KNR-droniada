@@ -4,6 +4,7 @@ from CV import BallFinder
 #import FlightControllerInterface
 import subprocess
 import time
+from time import sleep
 
 def run_mission():
     
@@ -30,32 +31,26 @@ def find_balls_img(img):
 
 
 def test_camera_controller():
+    # inicjalizacja obiektu
     camera_controller_obj = CameraController()
-    #patrzy w dół
+    
+    # patrzy w dół
     camera_controller_obj.set_angle(33)
+    # sleep żeby miało czas się ruszyć
+    sleep(0.2)
+    # strzel fote
+    camera_controller_obj.take_picture()
+
     #patrzy do przodu pod kątem lekko w dół
     camera_controller_obj.set_angle(-25)
-    
-
-    # try:
-    #     # Run the CameraController.py script
-    #     subprocess.run(['python3', 'CameraController.py'], check=True)
-    # except subprocess.CalledProcessError as e:
-    #     print(f"Error running CameraController.py: {e}")
+    sleep(0.2)
+    camera_controller_obj.take_picture()
 
 def test_gripper_controller():
     gripper_controller = GripperController()
     gripper_controller.get_distance_claw_sensor()
     pass
-# if __name__ == "__main__":
-#     while True:
-#         test_importu()
-#         time.sleep(1)  # Add a delay if needed to prevent rapid execution
-#         test_rotate_camera()
-#         time.sleep(1)  # Add a delay if needed to prevent rapid execution
 
-# gripper_controller.test_importu()
-
-
-# test_grippercontroller()
-test_camera_controller()
+if __name__ == "__main__":
+    test_camera_controller()
+    # test_camera_pic()
