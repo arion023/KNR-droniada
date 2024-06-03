@@ -3,3 +3,4 @@
 *.d
 *.o
 __pycache__
+controller/myenv
