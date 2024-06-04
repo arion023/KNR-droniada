@@ -153,7 +153,7 @@ class FlightControllerHandler:
         if mock:
             self.serial_bus = MockSerial()
         else:
-            self.serial_bus = serial.Serial(port='/dev/tty0',
+            self.serial_bus = serial.Serial(port='/dev/ttyS0',
                                         baudrate=57600,
                                         parity=serial.PARITY_NONE,
                                         stopbits=serial.STOPBITS_ONE,

@@ -6,4 +6,5 @@ source myenv/bin/activate
 # sudo raspi-config --> Interface Options --> I2C,SPI,Serial Port, Remote GPIO na YES
 # aktywacja deamona od kamery
 sudo pigpiod
-/snap/bin/mjpg-streamer -i "input_uvc.so -d /dev/video0" -o "output_http.so -w /usr/share/mjpg-streamer/www -p 8080"
+
+/snap/bin/mjpg-streamer -i "input_uvc.so -d /dev/video0" -o "output_http.so -w /usr/share/mjpg-streamer/www -p 8080" &

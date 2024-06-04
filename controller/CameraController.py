@@ -2,12 +2,13 @@ from gpiozero import AngularServo
 from time import sleep
 from gpiozero import Device
 from gpiozero.pins.pigpio import PiGPIOFactory
-#import ffmpeg
 import numpy as np
 from PIL import Image
 import io
 import os
 import ffmpeg
+# from ffmpeg import ffmpeg
+
 
 '''
 Servo kable:
@@ -87,7 +88,7 @@ class CameraController:
         self.set_angle(33)
         sleep(1)
         self.set_angle(-25)
-        #sleep(2)
+        sleep(2)
 
     def take_picture(self):
         print(f"Taking picture at angle: {self.current_angle}")

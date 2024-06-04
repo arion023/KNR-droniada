@@ -2,9 +2,9 @@ import RPi.GPIO as GPIO
 from time import sleep
 
 class Gripper:
-    pin1 = 17
-    pin2 = 27
-    pin_pwm = 22
+    pin1 = 27
+    pin2 = 17
+    pin_pwm = 12
     
     def __init__(self):
         self.gripped = False
@@ -15,7 +15,7 @@ class Gripper:
 
         # Konfiguracja PWM
         self.pwm = GPIO.PWM(self.pin_pwm, 1000)  # Ustawienie częstotliwości PWM na 1 kHz
-        self.pwm.start(100)  # Uruchomienie PWM z wypełnieniem 100% (wartość 1)
+        self.pwm.start(60)  # Uruchomienie PWM z wypełnieniem 100% (wartość 1)
     
     def open_grip(self):
         GPIO.output(self.pin1, GPIO.HIGH)
