@@ -6,7 +6,8 @@ hsv_values = {
     "Zolta pilka": {"lower": np.array([20, 80, 0]), "upper": np.array([50, 255, 255]), "color": (0, 255, 255)},
     "Ceglana pilka": {"lower": np.array([40, 40, 50]), "upper": np.array([180, 50, 255]), "color": (0, 0, 255)},  # Czerwony kolor ramki
     "Niebieska pilka": {"lower": np.array([60, 60, 0]), "upper": np.array([110, 255, 255]), "color": (255, 0, 0)},
-    "Fioletowa pilka": {"lower": np.array([120, 40, 0]), "upper": np.array([160, 255, 255]), "color": (255, 0, 255)}
+    "Fioletowa pilka": {"lower": np.array([120, 40, 0]), "upper": np.array([160, 255, 255]), "color": (255, 0, 255)},
+    "Biala plachta": {"lower": np.array([0, 0, 180]), "upper": np.array([180, 50, 255]), "color": (0, 0, 255)}
 }
 
 # Funkcje ruchu (przykładowe)
@@ -31,13 +32,13 @@ def detect_color(frame, lower_color, upper_color, color, draw_rectangle):
     
     contours, _ = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
-    if len(contours) > 0:
-        c = max(contours, key=cv2.contourArea)
-        x, y, w, h = cv2.boundingRect(c)
+    targets = []
+    for contour in contours:
+        x, y, w, h = cv2.boundingRect(contour)
         if draw_rectangle:
             cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
-        return (x, y, w, h), mask, cv2.contourArea(c)
-    return None, mask, 0
+        targets.append((x, y, w, h))
+    return targets, mask
 
 # Funkcja do obliczania komendy sterującej na podstawie błędu
 def compute_control_command(target, frame_center):
@@ -50,7 +51,7 @@ def compute_control_command(target, frame_center):
     return error_x, error_y
 
 # Wczytanie obrazu z pliku
-image_path = r'C:\Users\Turlaq\Desktop\test.jpg'  # Zamień tę ścieżkę na rzeczywistą ścieżkę do obrazu
+image_path = r''  # Zamień tę ścieżkę na rzeczywistą ścieżkę do obrazu
 frame = cv2.imread(image_path)
 
 # Sprawdzenie czy obraz został poprawnie wczytany
@@ -80,33 +81,37 @@ def adjust_rectangle_position(target, frame_center):
 
     # Stałe do regulacji
     movement_threshold = 30  # Minimalna odległość, aby ruch był wykonywany 
-                             # wartosci dla threshold sa podawane jak roznica bezwgledna wspolrzednych x i y  
-                             # Trzeba wziac poprawke na to ze kamera celuje soba a nie chwytakiem czyli przesuwac wychlenie wzgledem osi y o jakas wartosc
+                             # wartości dla threshold są podawane jako różnica bezwzględna współrzędnych x i y  
+                             # Trzeba wziąć poprawkę na to, że kamera celuje sobą, a nie chwytakiem, czyli przesuwać wychylenie względem osi y o jakąś wartość
    
     # Regulacja ruchu wzdłuż osi X
     if abs(error_x) > movement_threshold:
         if error_x > 0:
             move_left()  # Prostokąt przesunięty w prawo zgodnie do zwrotu x
-            print('Przesuniecie w lewo')
+            print('Przesunięcie w lewo')
         else:
             move_right()  # Prostokąt przesunięty przeciwnie do zwrotu x
-            print('Przesuniecie w prawo')
-        
-            
+            print('Przesunięcie w prawo')
 
     # Regulacja ruchu wzdłuż osi Y
     if abs(error_y) > movement_threshold:
         if error_y > 0:
             move_forward()  # Prostokąt przesunięty zgodnie do zwrotu y
-            print('Przesuniecie w przodu') 
+            print('Przesunięcie w przód') 
         else:
             move_back()  # Prostokąt przesunięty przeciwnie do zwrotu y
-            print('Przesuniecie do tyłu ')
+            print('Przesunięcie do tyłu')
 
 while True:
     # Skalowanie obrazu
     resized_frame = cv2.resize(frame, dim, interpolation=cv2.INTER_AREA)
     frame_center = (resized_frame.shape[1] // 2, resized_frame.shape[0] // 2)
+
+    # Wykrywanie białych obszarów
+    lower_white = hsv_values["Biala plachta"]["lower"]
+    upper_white = hsv_values["Biala plachta"]["upper"]
+    white_color = hsv_values["Biala plachta"]["color"]
+    white_targets, white_mask = detect_color(resized_frame, lower_white, upper_white, white_color, draw_rectangle)
 
     best_area = 0
     best_target = None
@@ -114,32 +119,37 @@ while True:
     best_color_name = None
     best_color = None
 
-    # Przeszukiwanie wszystkich zestawów wartości HSV
-    for color_name, hsv in hsv_values.items():
-        lower_color = hsv["lower"]
-        upper_color = hsv["upper"]
-        color = hsv.get("color", (0, 0, 0))  # Default to black if color is not specified
-        target, mask, area = detect_color(resized_frame, lower_color, upper_color, color, draw_rectangle)
-        
-        # Wyświetlanie maski w osobnym oknie dla każdej maski
-        cv2.imshow(f'Mask {color_name}', mask)
-        
-        if area > best_area:
-            best_area = area
-            best_target = target
-            best_mask = mask
-            best_color_name = color_name
-            best_color = color
+    for white_target in white_targets:
+        x, y, w, h = white_target
+        white_area_frame = resized_frame[y:y+h, x:x+w]
+
+        # Przeszukiwanie wszystkich zestawów wartości HSV w białych obszarach
+        for color_name, hsv in hsv_values.items():
+            if color_name == "Biala plachta":
+                continue  # Pomijanie detekcji białych obszarów ponownie
+
+            lower_color = hsv["lower"]
+            upper_color = hsv["upper"]
+            color = hsv.get("color", (0, 0, 0))  # Default to black if color is not specified
+            targets, mask = detect_color(white_area_frame, lower_color, upper_color, color, draw_rectangle)
+            
+            for target in targets:
+                tx, ty, tw, th = target
+                area = tw * th
+                if area > best_area:
+                    best_area = area
+                    best_target = (x + tx, y + ty, tw, th)
+                    best_mask = mask
+                    best_color_name = color_name
+                    best_color = color
 
     # Wykonanie regulacji ruchu
     if best_target:
         adjust_rectangle_position(best_target, frame_center)
 
     # Wyświetlanie zmniejszonego obrazu
-    if best_color_name:
-        cv2.putText(resized_frame, best_color_name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, best_color, 2)
-
     cv2.imshow('Resized Frame', resized_frame)
+    cv2.imshow('White Mask', white_mask)
 
     # Oczekiwanie na klawisz i zakończenie pętli w przypadku naciśnięcia klawisza 'q'
     key = cv2.waitKey(1) & 0xFF
