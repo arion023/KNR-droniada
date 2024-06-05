@@ -70,7 +70,7 @@ def calculate_gradient(target, frame_center):
     return gradient
 
 # Wczytanie obrazu z pliku
-image_path = r'C:\Users\hyper\OneDrive\Desktop\zdjecia z podlotu\4.jpg'  # Zamień tę ścieżkę na rzeczywistą ścieżkę do obrazu
+image_path = r'C:\Users\hyper\OneDrive\Desktop\zdjecia z podlotu\czerwona1.jpg'  # Zamień tę ścieżkę na rzeczywistą ścieżkę do obrazu
 frame = cv2.imread(image_path)
 
 # Sprawdzenie czy obraz został poprawnie wczytany
@@ -151,8 +151,8 @@ while True:
         adjust_rectangle_position(best_target, frame_center)
 
     # Obliczanie gradientu
-    gradient = calculate_gradient(best_target, frame_center)
-    print(f"Gradient: {gradient}")
+    step = calculate_gradient(best_target, frame_center)
+    print(f"step: {step}")
 
     # Wyświetlanie zmniejszonego obrazu
     if best_color_name:
