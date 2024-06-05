@@ -1,45 +1,29 @@
 import cv2
 import numpy as np
 
-"""
-Najpierw program iteruje po wszystkich maskach i sprawdza ktorej uzyc
-potem robi maske i rysuje prostokat dookola obszaru najwiekszego konturu dla danego
-koloru nastepnie algorytm stara sie utrzymac dany prostokat w srodku obrazu kamery
-przez wydawanie konkretnych komend do drona. 
-
-"""
-
-# Zestawy wartości HSV dla różnych obiektów
+# Zestawy wartości HSV dla różnych obiektów i kolory ramki
 hsv_values = {
-    "Zolta pilka": {"lower": np.array([0, 100, 190]), "upper": np.array([50, 255, 255])},
-    "Ceglana pilka": {"lower": np.array([145, 95, 150]), "upper": np.array([180, 255, 255])},
-    "Niebieska pilka": {"lower": np.array([95, 110, 175]), "upper": np.array([150, 255, 230])},
-    "Fioletowa pilka": {"lower": np.array([90, 90, 0]), "upper": np.array([130, 255, 255])}
+    "Zolta pilka": {"lower": np.array([20, 80, 0]), "upper": np.array([50, 255, 255]), "color": (0, 255, 255)},
+    "Ceglana pilka": {"lower": np.array([40, 40, 50]), "upper": np.array([180, 50, 255]), "color": (0, 0, 255)},  # Czerwony kolor ramki
+    "Niebieska pilka": {"lower": np.array([60, 60, 0]), "upper": np.array([110, 255, 255]), "color": (255, 0, 0)},
+    "Fioletowa pilka": {"lower": np.array([120, 40, 0]), "upper": np.array([160, 255, 255]), "color": (255, 0, 255)}
 }
 
 # Funkcje ruchu (przykładowe)
 def move_left():
-    #print("Moving left")
     pass
 
 def move_right():
-    #print("Moving right")
     pass
 
 def move_forward():
-    #print("Moving up")
     pass
 
 def move_back():
-    #print("Moving down")
-    pass
-
-# Funkcja nic nie robiąca dla suwaków trackbar
-def nothing(x):
     pass
 
 # Funkcja do wykrywania koloru
-def detect_color(frame, lower_color, upper_color, draw_rectangle):
+def detect_color(frame, lower_color, upper_color, color, draw_rectangle):
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, lower_color, upper_color)
     mask = cv2.erode(mask, None, iterations=2)
@@ -51,7 +35,7 @@ def detect_color(frame, lower_color, upper_color, draw_rectangle):
         c = max(contours, key=cv2.contourArea)
         x, y, w, h = cv2.boundingRect(c)
         if draw_rectangle:
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
         return (x, y, w, h), mask, cv2.contourArea(c)
     return None, mask, 0
 
@@ -66,7 +50,7 @@ def compute_control_command(target, frame_center):
     return error_x, error_y
 
 # Wczytanie obrazu z pliku
-image_path = r'C:\Users\Turlaq\Desktop\zolta.jpg'  # Zamień tę ścieżkę na rzeczywistą ścieżkę do obrazu
+image_path = r'C:\Users\Turlaq\Desktop\test.jpg'  # Zamień tę ścieżkę na rzeczywistą ścieżkę do obrazu
 frame = cv2.imread(image_path)
 
 # Sprawdzenie czy obraz został poprawnie wczytany
@@ -75,19 +59,10 @@ if frame is None:
     exit()
 
 # Zmniejszenie rozmiaru obrazu
-scale_percent = 30  # Skaluje obraz do 50% oryginalnego rozmiaru
+scale_percent = 50  # Skaluje obraz do 50% oryginalnego rozmiaru
 width = int(frame.shape[1] * scale_percent / 100)
 height = int(frame.shape[0] * scale_percent / 100)
 dim = (width, height)
-
-# Utworzenie okna z suwakami do kalibracji koloru
-#cv2.namedWindow('Trackbars')
-#cv2.createTrackbar('LH', 'Trackbars', 0, 180, nothing)
-#cv2.createTrackbar('LS', 'Trackbars', 0, 255, nothing)
-#cv2.createTrackbar('LV', 'Trackbars', 0, 255, nothing)
-#cv2.createTrackbar('UH', 'Trackbars', 180, 180, nothing)
-#cv2.createTrackbar('US', 'Trackbars', 255, 255, nothing)
-#cv2.createTrackbar('UV', 'Trackbars', 255, 255, nothing)
 
 draw_rectangle = False
 
@@ -137,18 +112,24 @@ while True:
     best_target = None
     best_mask = None
     best_color_name = None
+    best_color = None
 
     # Przeszukiwanie wszystkich zestawów wartości HSV
     for color_name, hsv in hsv_values.items():
         lower_color = hsv["lower"]
         upper_color = hsv["upper"]
-        target, mask, area = detect_color(resized_frame, lower_color, upper_color, draw_rectangle)
+        color = hsv.get("color", (0, 0, 0))  # Default to black if color is not specified
+        target, mask, area = detect_color(resized_frame, lower_color, upper_color, color, draw_rectangle)
+        
+        # Wyświetlanie maski w osobnym oknie dla każdej maski
+        cv2.imshow(f'Mask {color_name}', mask)
         
         if area > best_area:
             best_area = area
             best_target = target
             best_mask = mask
             best_color_name = color_name
+            best_color = color
 
     # Wykonanie regulacji ruchu
     if best_target:
@@ -156,12 +137,9 @@ while True:
 
     # Wyświetlanie zmniejszonego obrazu
     if best_color_name:
-        cv2.putText(resized_frame, best_color_name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+        cv2.putText(resized_frame, best_color_name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, best_color, 2)
 
     cv2.imshow('Resized Frame', resized_frame)
-    cv2.imshow('Mask', best_mask)
-
-    
 
     # Oczekiwanie na klawisz i zakończenie pętli w przypadku naciśnięcia klawisza 'q'
     key = cv2.waitKey(1) & 0xFF
