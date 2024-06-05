@@ -1,7 +1,7 @@
 from GripperController import GripperController
 from CameraController import CameraController
 from CV import BallFinder
-import LandingController
+# import LandingController
 #import FlightControllerInterface
 import subprocess
 import time
@@ -73,28 +73,37 @@ def test_gripper_controller():
     distance_from_sensor = gripper_controller_obj.get_distance_claw_sensor()
     print(distance_from_sensor)
     
+def take_pictures_continously():
+    
+    
+    camera_controller_obj = CameraController()
+    
+    array_pic = camera_controller_obj.take_pictures_continously()
+        
+        # #działa# patrzy w dół
+        # print("kamera patrzy w dół")
+        # # camera_controller_obj.set_angle(33)
+        # # sleep żeby miało czas się ruszyć
+        # sleep(0.2)
+        # # strzel fote
+        # print("zrobienie zdjęcia")
+        # camera_controller_obj.take_picture()
 
-if __name__ == "__main__":
-    #działa# patrzy w dół
-    print("kamera patrzy w dół")
-    camera_controller_obj.set_angle(33)
-    # sleep żeby miało czas się ruszyć
-    sleep(0.2)
-    # strzel fote
-    print("zrobienie zdjęcia")
-    camera_controller_obj.take_picture()
-
-    # patrzy do przodu pod kątem lekko w dół
-    print("kamera patrzy na skos")
-    camera_controller_obj.set_angle(-25)
-    sleep(0.2)
-    print("zrobienie zdjęcia")
-    camera_controller_obj.take_picture()
+        # # patrzy do przodu pod kątem lekko w dół
+        # print("kamera patrzy na skos")
+        # # camera_controller_obj.set_angle(-25)
+        # sleep(0.2)
+        # print("zrobienie zdjęcia")
+        # camera_controller_obj.take_picture()
 
     #test ruchu kamery i zrobienia zdjęcia
     # test_gripper_controller()
     
-    test_camera_controller()
+
+if __name__ == "__main__":
+    
+    
+    # test_camera_controller()
 
     take_pictures_continously()
 
