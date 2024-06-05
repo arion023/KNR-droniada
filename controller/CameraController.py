@@ -7,6 +7,7 @@ from PIL import Image
 import io
 import os
 import ffmpeg
+from datetime import datetime
 # from ffmpeg import ffmpeg
 
 
@@ -89,9 +90,28 @@ class CameraController:
         sleep(1)
         self.set_angle(-25)
         sleep(2)
+    '''
+    STARA METODA BEZ TIMESTAMPU
+    '''
+    # def take_picture(self):
+    #     print(f"Taking picture at angle: {self.current_angle}")
+    #     try:
+    #         stream_url = 'http://localhost:8080/?action=stream'
+    #         out, _ = (
+    #             ffmpeg
+    #             .input(stream_url)
+    #             .output('pipe:', vframes=1, format='image2', vcodec='mjpeg')
+    #             .run(capture_stdout=True, capture_stderr=True)
+    #         )
+    #         image_np = np.frombuffer(out, np.uint8)
+    #         image = Image.open(io.BytesIO(image_np))
+    #         image.save(os.path.join(self.image_folder, f'pic_at_angle{self.current_angle}_.jpg'))
+    #     except ffmpeg.Error as e:
+    #         print("ffmpeg error:", e.stderr.decode('utf8'))
 
     def take_picture(self):
-        print(f"Taking picture at angle: {self.current_angle}")
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        print(f"Taking picture at angle: {self.current_angle} at {timestamp}")
         try:
             stream_url = 'http://localhost:8080/?action=stream'
             out, _ = (
@@ -102,9 +122,12 @@ class CameraController:
             )
             image_np = np.frombuffer(out, np.uint8)
             image = Image.open(io.BytesIO(image_np))
-            image.save(os.path.join(self.image_folder, f'output_{self.current_angle}.jpg'))
+            filename = f'pic_at_angle{self.current_angle}_{timestamp}.jpg'
+            image.save(os.path.join(self.image_folder, filename))
+            print(f"Saved picture as {filename}")
         except ffmpeg.Error as e:
             print("ffmpeg error:", e.stderr.decode('utf8'))
+
 
 if __name__ == "__main__":
     camera_controller_obj = CameraController()
