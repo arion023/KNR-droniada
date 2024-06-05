@@ -9,7 +9,7 @@ from time import sleep
 def run_mission():
     camera_controller_obj = CameraController()
     gripper_controller_obj = GripperController()
-    b
+    
     #take off
     #poleć do miejsca gdzie zrobi fote
 

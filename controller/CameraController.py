@@ -6,8 +6,9 @@ import numpy as np
 from PIL import Image
 import io
 import os
+from datetime import datetime
 import ffmpeg
-#from ffmpeg import ffmpeg
+# from ffmpeg import ffmpeg
 
 
 # '''
@@ -89,7 +90,7 @@ class CameraController:
         sleep(1)
         self.set_angle(-25)
         sleep(2)
-'''
+    '''
     STARA METODA BEZ TIMESTAMPU
     '''
     # def take_picture(self):
@@ -129,5 +130,5 @@ class CameraController:
 
 if __name__ == "__main__":
     camera_controller_obj = CameraController()
-    camera_controller_obj.max_positions_test()
-    # camera_controller_obj.take_picture()
+    # camera_controller_obj.max_positions_test()
+    camera_controller_obj.take_picture()
