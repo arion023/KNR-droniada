@@ -77,7 +77,7 @@ class CameraController:
         #while True:
         self.set_angle(33)
         # sleep(1)
-        self.set_angle(100)
+        self.set_angle(-25)
         # sleep(2)
 
     def take_picture(self):
