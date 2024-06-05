@@ -260,21 +260,96 @@ class FlightControllerHandler:
             status = False
 
 
+# if __name__ == "__main__":
+
+#     #example of how to use code, output will be logged in log directory
+#     #run this code from communication directory
+#     #if you have doesn't configured serial bus in code, use mock=True, and create mock directory, this will write to file in this directory
+#     mock_responses = ['ACK@', 'ACK@', 'ACK@', 'ACK@', 'ACK@']
+
+#     interface = FlightControllerInterface(mock=False, mock_responses=mock_responses)
+#     interface.run_handler()
+
+#     # interface.move(2., 2., 3.) #63 bytes
+#     # interface.start() #60
+#     interface.rotate(2) #0
+    
+
+#     # interface.move(3., 2., 3.)
+#     # interface.move(4., 2., 3.)
+#     # interface.move(5., 2., 3.)
+#     # interface.move(6., 2., 3.)
+    
+#     # interface.goto_point(1,1,1)
+#     for i in range (100):
+#         # cmd = 'AAA'
+
+#         # interface.command_que.put_nowait((cmd, []))
+
+
+#         cmd = 'AAAAA'
+
+#         interface.command_que.put_nowait((cmd, []))
+            
+#         cmd = 'AAAAAAAAAA'
+
+#         interface.command_que.put_nowait((cmd, []))
+
+#     # interface.terminate_handler()
+
+import serial
+import serial
+
+def pack_bytes(cmd, values):
+    checksum=int(0)
+    cmd_bytes = cmd.encode('utf-8')
+    endcommand = '@'
+    endcommand = endcommand.encode('utf-8')
+    #command formats = @ CMD XYZ CHECKSUM
+    return struct.pack('>bbbfffib', *cmd_bytes, *values, checksum, *endcommand)
+
+
+def send_bytes_to_stm32(serial_port, num_bytes):
+    """
+    Sends a specified number of bytes to the STM32 microcontroller, 
+    ending with '@' as the terminating character.
+
+    Parameters:
+    serial_port (serial.Serial): The serial port connected to the STM32.
+    num_bytes (int): The number of bytes to send, including the '@' terminator.
+    """
+    if not serial_port.isOpen():
+        raise Exception("Serial port is not open")
+
+    # Example byte data to send (for illustration purposes)
+    data = bytearray([i % 256 for i in range(num_bytes - 1)])
+    
+    # Append '@' as the terminating character
+    endcommand = '@'
+    endcommand = endcommand.encode('utf-8')
+    
+    data.append(ord(endcommand))
+    
+    
+    
+    # Send the byte data to STM32
+    serial_port.write(data)
+    serial_port.flush()
+
+    print(f"Sent {num_bytes} bytes to STM32, ending with '@'")
+
+# Example usage
 if __name__ == "__main__":
+    # Open the serial port
+    try:
+        serial_port = serial.Serial(port='/dev/ttyS0', baudrate=57600, timeout=1)
+        send_bytes_to_stm32(serial_port, 10)  # Sends 9 bytes of data plus '@' as the 10th byte
+        send_bytes_to_stm32(serial_port, 20)  # Sends 9 bytes of data plus '@' as the 10th byte
+        # send_bytes_to_stm32(serial_port, 30)  # Sends 9 bytes of data plus '@' as the 10th byte
+        # send_bytes_to_stm32(serial_port, 100)  # Sends 9 bytes of data plus '@' as the 10th byte
+    except serial.SerialException as e:
+        print(f"Error opening serial port: {e}")
+    finally:
+        if serial_port.isOpen():
+            serial_port.close()
 
-    #example of how to use code, output will be logged in log directory
-    #run this code from communication directory
-    #if you have doesn't configured serial bus in code, use mock=True, and create mock directory, this will write to file in this directory
-    mock_responses = ['ACK@', 'ACK@', 'ACK@', 'ACK@', 'ACK@']
-
-    interface = FlightControllerInterface(mock=False, mock_responses=mock_responses)
-    interface.run_handler()
-
-    interface.move(2., 2., 3.)
-    interface.move(3., 2., 3.)
-    interface.move(4., 2., 3.)
-    interface.move(5., 2., 3.)
-    interface.move(6., 2., 3.)
-
-
-    interface.terminate_handler()

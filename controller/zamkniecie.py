@@ -95,11 +95,11 @@ if __name__ == "__main__":
         gripper = GripperController()
 
         # Przykładowe użycie funkcji
-        gripper.open_gripper(0.5)  # Jedź do przodu z połową prędkości
+        #gripper.open_gripper(0.4)  # Jedź do przodu z połową prędkości
         
-        time.sleep(2.5)  # Czekaj 2 sekundy
-        #gripper.close_gripper(0.4)  # Jedź do tyłu z mniejszą prędkością
         #time.sleep(2)  # Czekaj 2 sekundy
+        gripper.close_gripper(0.4)  # Jedź do tyłu z mniejszą prędkością
+        time.sleep(2)  # Czekaj 2 sekundy
         gripper.motor_stop()  # Zatrzymaj silnik
         
         #gripper.get_distance_claw_sensor(print_data=True)

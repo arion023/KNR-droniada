@@ -110,6 +110,7 @@ class FlightControllerInterface():
         cmd = 'STR'
 
         self.command_que.put_nowait((cmd, []))
+        #self.command_que.put_nowait("STR")
         self.logger.info(f'Command send to handler. {cmd}')
 
 
@@ -270,11 +271,14 @@ if __name__ == "__main__":
     interface = FlightControllerInterface(mock=False, mock_responses=mock_responses)
     interface.run_handler()
 
-    interface.move(2., 2., 3.)
-    interface.move(3., 2., 3.)
-    interface.move(4., 2., 3.)
-    interface.move(5., 2., 3.)
-    interface.move(6., 2., 3.)
+    # interface.move(2., 2., 3.)
+    interface.start()
+    time.sleep(5)
+    interface.land()
+    # interface.move(3., 2., 3.)
+    # interface.move(4., 2., 3.)
+    # interface.move(5., 2., 3.)
+    # interface.move(6., 2., 3.)
 
 
     interface.terminate_handler()
