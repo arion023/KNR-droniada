@@ -1,20 +1,13 @@
 import cv2
 import numpy as np
 
-# Zestawy wartości HSV dla różnych obiektów
+# Zestawy wartości HSV dla różnych obiektów i kolory ramki
 hsv_values = {
-<<<<<<< HEAD
     "Zolta pilka": {"lower": np.array([20, 80, 0]), "upper": np.array([50, 255, 255]), "color": (0, 255, 255)},
     "Ceglana pilka": {"lower": np.array([40, 40, 50]), "upper": np.array([180, 50, 255]), "color": (0, 0, 255)},  # Czerwony kolor ramki
     "Niebieska pilka": {"lower": np.array([60, 60, 0]), "upper": np.array([110, 255, 255]), "color": (255, 0, 0)},
     "Fioletowa pilka": {"lower": np.array([120, 40, 0]), "upper": np.array([160, 255, 255]), "color": (255, 0, 255)},
     "Biala plachta": {"lower": np.array([0, 0, 180]), "upper": np.array([180, 50, 255]), "color": (0, 0, 255)}
-=======
-    "Zolta pilka": {"lower": np.array([0, 100, 190]), "upper": np.array([50, 255, 255])},
-    "Ceglana pilka": {"lower": np.array([145, 95, 150]), "upper": np.array([180, 255, 255])},
-    "Niebieska pilka": {"lower": np.array([95, 110, 175]), "upper": np.array([150, 255, 230])},
-    "Fioletowa pilka": {"lower": np.array([90, 90, 0]), "upper": np.array([130, 255, 255])}
->>>>>>> 3900ed7579983b30392214576366acd1bfa2a47d
 }
 
 # Funkcje ruchu (przykładowe)
@@ -31,7 +24,7 @@ def move_back():
     pass
 
 # Funkcja do wykrywania koloru
-def detect_color(frame, lower_color, upper_color, draw_rectangle):
+def detect_color(frame, lower_color, upper_color, color, draw_rectangle):
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, lower_color, upper_color)
     mask = cv2.erode(mask, None, iterations=2)
@@ -43,15 +36,9 @@ def detect_color(frame, lower_color, upper_color, draw_rectangle):
     for contour in contours:
         x, y, w, h = cv2.boundingRect(contour)
         if draw_rectangle:
-<<<<<<< HEAD
             cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
         targets.append((x, y, w, h))
     return targets, mask
-=======
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-        return (x, y, w, h), mask, cv2.contourArea(c)
-    return None, mask, 0
->>>>>>> 3900ed7579983b30392214576366acd1bfa2a47d
 
 # Funkcja do obliczania komendy sterującej na podstawie błędu
 def compute_control_command(target, frame_center):
@@ -63,32 +50,8 @@ def compute_control_command(target, frame_center):
     
     return error_x, error_y
 
-# Funkcja do obliczania gradientu
-def calculate_gradient(target, frame_center):
-    if target is None:
-        return float('inf')  # Jeśli nie wykryto piłki, gradient jest nieskończonością
-
-    x, y, w, h = target
-    target_center_x = x + w // 2
-    target_center_y = y + h // 2
-
-    # Oblicz euklidesową odległość od środka obrazu do środka piłki
-    distance_to_center = np.sqrt((frame_center[0] - target_center_x)**2 + (frame_center[1] - target_center_y)**2)
-    
-    # Wielkość piłki
-    size_of_ball = w + h
-    
-    # Oblicz gradient
-    gradient = distance_to_center / size_of_ball if size_of_ball != 0 else float('inf')
-    
-    return gradient
-
 # Wczytanie obrazu z pliku
-<<<<<<< HEAD
-image_path = r''  # Zamień tę ścieżkę na rzeczywistą ścieżkę do obrazu
-=======
-image_path = r'C:\Users\hyper\OneDrive\Desktop\zdjecia z podlotu\czerwona1.jpg'  # Zamień tę ścieżkę na rzeczywistą ścieżkę do obrazu
->>>>>>> 3900ed7579983b30392214576366acd1bfa2a47d
+image_path = r'C:\Users\Turlaq\Desktop\test.jpg'  # Zamień tę ścieżkę na rzeczywistą ścieżkę do obrazu
 frame = cv2.imread(image_path)
 
 # Sprawdzenie czy obraz został poprawnie wczytany
@@ -97,7 +60,7 @@ if frame is None:
     exit()
 
 # Zmniejszenie rozmiaru obrazu
-scale_percent = 30  # Skaluje obraz do 30% oryginalnego rozmiaru
+scale_percent = 50  # Skaluje obraz do 50% oryginalnego rozmiaru
 width = int(frame.shape[1] * scale_percent / 100)
 height = int(frame.shape[0] * scale_percent / 100)
 dim = (width, height)
@@ -116,7 +79,6 @@ def adjust_rectangle_position(target, frame_center):
     error_x = frame_center[0] - target_center_x
     error_y = frame_center[1] - target_center_y
 
-<<<<<<< HEAD
     # Stałe do regulacji
     movement_threshold = 30  # Minimalna odległość, aby ruch był wykonywany 
                              # wartości dla threshold są podawane jako różnica bezwzględna współrzędnych x i y  
@@ -130,41 +92,15 @@ def adjust_rectangle_position(target, frame_center):
         else:
             move_right()  # Prostokąt przesunięty przeciwnie do zwrotu x
             print('Przesunięcie w prawo')
-=======
-    # Dynamiczne przeliczanie threshold na podstawie wielkości piłki
-    movement_threshold = int((w + h) / 2)  # Przykładowe skalowanie; można dostosować współczynnik
-
-    # Rysowanie okręgu określającego threshold
-    cv2.circle(frame, frame_center, movement_threshold, (255, 0, 0), 2)
-
-    print(f"Threshold: {movement_threshold}, Error X: {error_x}, Error Y: {error_y}")
-
-    # Regulacja ruchu wzdłuż osi X
-    if abs(error_x) > movement_threshold:
-        if error_x > 0:
-            move_left()
-            print('Przesuniecie w lewo')
-        else:
-            move_right()
-            print('Przesuniecie w prawo')
->>>>>>> 3900ed7579983b30392214576366acd1bfa2a47d
 
     # Regulacja ruchu wzdłuż osi Y
     if abs(error_y) > movement_threshold:
         if error_y > 0:
-<<<<<<< HEAD
             move_forward()  # Prostokąt przesunięty zgodnie do zwrotu y
             print('Przesunięcie w przód') 
         else:
             move_back()  # Prostokąt przesunięty przeciwnie do zwrotu y
             print('Przesunięcie do tyłu')
-=======
-            move_forward()
-            print('Przesuniecie do przodu') 
-        else:
-            move_back()
-            print('Przesuniecie do tyłu')
->>>>>>> 3900ed7579983b30392214576366acd1bfa2a47d
 
 while True:
     # Skalowanie obrazu
@@ -181,8 +117,8 @@ while True:
     best_target = None
     best_mask = None
     best_color_name = None
+    best_color = None
 
-<<<<<<< HEAD
     for white_target in white_targets:
         x, y, w, h = white_target
         white_area_frame = resized_frame[y:y+h, x:x+w]
@@ -206,39 +142,14 @@ while True:
                     best_mask = mask
                     best_color_name = color_name
                     best_color = color
-=======
-    # Przeszukiwanie wszystkich zestawów wartości HSV
-    for color_name, hsv in hsv_values.items():
-        lower_color = hsv["lower"]
-        upper_color = hsv["upper"]
-        target, mask, area = detect_color(resized_frame, lower_color, upper_color, draw_rectangle)
-        
-        if area > best_area:
-            best_area = area
-            best_target = target
-            best_mask = mask
-            best_color_name = color_name
->>>>>>> 3900ed7579983b30392214576366acd1bfa2a47d
 
     # Wykonanie regulacji ruchu
     if best_target:
         adjust_rectangle_position(best_target, frame_center)
 
-    # Obliczanie gradientu
-    step = calculate_gradient(best_target, frame_center)
-    print(f"step: {step}")
-
     # Wyświetlanie zmniejszonego obrazu
-<<<<<<< HEAD
     cv2.imshow('Resized Frame', resized_frame)
     cv2.imshow('White Mask', white_mask)
-=======
-    if best_color_name:
-        cv2.putText(resized_frame, best_color_name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
-
-    cv2.imshow('Resized Frame', resized_frame)
-    cv2.imshow('Mask', best_mask)
->>>>>>> 3900ed7579983b30392214576366acd1bfa2a47d
 
     # Oczekiwanie na klawisz i zakończenie pętli w przypadku naciśnięcia klawisza 'q'
     key = cv2.waitKey(1) & 0xFF
