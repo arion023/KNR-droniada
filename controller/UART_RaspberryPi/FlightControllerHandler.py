@@ -300,6 +300,15 @@ class FlightControllerHandler:
 import serial
 import serial
 
+def pack_bytes(cmd, values):
+    checksum=int(0)
+    cmd_bytes = cmd.encode('utf-8')
+    endcommand = '@'
+    endcommand = endcommand.encode('utf-8')
+    #command formats = @ CMD XYZ CHECKSUM
+    return struct.pack('>bbbfffib', *cmd_bytes, *values, checksum, *endcommand)
+
+
 def send_bytes_to_stm32(serial_port, num_bytes):
     """
     Sends a specified number of bytes to the STM32 microcontroller, 
@@ -316,8 +325,13 @@ def send_bytes_to_stm32(serial_port, num_bytes):
     data = bytearray([i % 256 for i in range(num_bytes - 1)])
     
     # Append '@' as the terminating character
-    data.append(ord('@'))
-
+    endcommand = '@'
+    endcommand = endcommand.encode('utf-8')
+    
+    data.append(ord(endcommand))
+    
+    
+    
     # Send the byte data to STM32
     serial_port.write(data)
     serial_port.flush()
@@ -331,8 +345,8 @@ if __name__ == "__main__":
         serial_port = serial.Serial(port='/dev/ttyS0', baudrate=57600, timeout=1)
         send_bytes_to_stm32(serial_port, 10)  # Sends 9 bytes of data plus '@' as the 10th byte
         send_bytes_to_stm32(serial_port, 20)  # Sends 9 bytes of data plus '@' as the 10th byte
-        send_bytes_to_stm32(serial_port, 30)  # Sends 9 bytes of data plus '@' as the 10th byte
-        send_bytes_to_stm32(serial_port, 100)  # Sends 9 bytes of data plus '@' as the 10th byte
+        # send_bytes_to_stm32(serial_port, 30)  # Sends 9 bytes of data plus '@' as the 10th byte
+        # send_bytes_to_stm32(serial_port, 100)  # Sends 9 bytes of data plus '@' as the 10th byte
     except serial.SerialException as e:
         print(f"Error opening serial port: {e}")
     finally:

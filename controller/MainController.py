@@ -31,6 +31,9 @@ def find_balls_img(img):
     pass
 
 
+def test_ball_recognition(img):
+    pass
+
 
 def test_camera_controller():
     # inicjalizacja obiektu
@@ -64,14 +67,15 @@ def test_gripper_controller():
     print("czytanie z czujnika odbiciowego")
     distance_from_sensor = gripper_controller_obj.get_distance_claw_sensor()
     print(distance_from_sensor)
+
     
 
 if __name__ == "__main__":
     #działa
     #test ruchu kamery i zrobienia zdjęcia
-    test_gripper_controller()
+    # test_gripper_controller()
     
-    # test_camera_controller()
+    test_camera_controller()
 
 
 
