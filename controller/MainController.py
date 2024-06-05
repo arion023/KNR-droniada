@@ -44,11 +44,11 @@ def test_camera_controller():
     # inicjalizacja obiektu
     camera_controller_obj = CameraController()
     
-    # patrzy w dół
+    # patrzy w dółsleep(1)
     print("kamera patrzy w dół")
     camera_controller_obj.set_angle(33)
     # sleep żeby miało czas się ruszyć
-    sleep(0.2)
+    sleep(0.5)
     # strzel fote
     print("zrobienie zdjęcia")
     camera_controller_obj.take_picture()
@@ -56,7 +56,7 @@ def test_camera_controller():
     #patrzy do przodu pod kątem lekko w dół
     print("kamera patrzy na skos")
     camera_controller_obj.set_angle(-25)
-    sleep(0.2)
+    sleep(0.5)
     print("zrobienie zdjęcia")
     camera_controller_obj.take_picture()
 

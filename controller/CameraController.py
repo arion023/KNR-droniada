@@ -122,13 +122,14 @@ class CameraController:
                 .output('pipe:', vframes=1, format='image2', vcodec='mjpeg')
                 .run(capture_stdout=True, capture_stderr=True)
             )
-            for i in range (20):
+            i = 0
+            while True:
+                i += 1
                 timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
                 img_path = f'pic_at_angle{self.current_angle}_{timestamp}.jpg'
                 print(f"Taking picture at angle: {self.current_angle}")
                 
-                
-                
+
                 image_np = np.frombuffer(out, np.uint8)
                 image = Image.open(io.BytesIO(image_np))
                 image.save(os.path.join(self.image_folder, img_path))
