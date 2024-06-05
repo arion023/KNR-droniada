@@ -2,37 +2,38 @@ import cv2
 import threading
 from collections import Counter
 import numpy as np
-import os 
+import matplotlib.pyplot as plt
 
 # def show_regions_of_interest(image, bounding_boxes, titles=None):
-#     """
-#     Extracts and displays multiple regions of interest (ROIs) from the image based on the given list of bounding boxes.
+    """
+    Extracts and displays multiple regions of interest (ROIs) from the image based on the given list of bounding boxes.
     
-#     Parameters:
-#     - image: The input image.
-#     - bounding_boxes: A list of tuples where each tuple is (x, y, w, h) representing a bounding box.
-#     """
-#     num_boxes = len(bounding_boxes)
-#     cols = 3
-#     rows = (num_boxes + cols - 1) // cols  # Calculate the number of rows needed
+    Parameters:
+    - image: The input image.
+    - bounding_boxes: A list of tuples where each tuple is (x, y, w, h) representing a bounding box.
+    """
 
-#     plt.figure(figsize=(15, 5 * rows))
+    num_boxes = len(bounding_boxes)
+    cols = 3
+    rows = (num_boxes + cols - 1) // cols  # Calculate the number of rows needed
+
+    plt.figure(figsize=(15, 5 * rows))
     
-#     for i, (x, y, w, h) in enumerate(bounding_boxes):
-#         # Extract the ROI
-#         roi = image[y:y+h, x:x+w]
+    for i, (x, y, w, h) in enumerate(bounding_boxes):
+        # Extract the ROI
+        roi = image[y:y+h, x:x+w]
         
-#         # Display the ROI
-#         plt.subplot(rows, cols, i + 1)
-#         plt.imshow(cv2.cvtColor(roi, cv2.COLOR_BGR2RGB))
-#         plt.axis('off')
-#         if titles is not None and i < len(titles):
-#             plt.title(titles[i])
-#         else:
-#             plt.title(f'Region {i + 1}')
+        # Display the ROI
+        plt.subplot(rows, cols, i + 1)
+        plt.imshow(cv2.cvtColor(roi, cv2.COLOR_BGR2RGB))
+        plt.axis('off')
+        if titles is not None and i < len(titles):
+            plt.title(titles[i])
+        else:
+            plt.title(f'Region {i + 1}')
     
-#     plt.tight_layout()
-#     plt.show()
+    plt.tight_layout()
+    plt.show()
    
     
 # def show_regions_and_histograms(image, bounding_boxes, center_crop_factor=0.5):

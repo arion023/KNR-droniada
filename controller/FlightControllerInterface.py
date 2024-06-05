@@ -1,20 +1,22 @@
-Class:
-    def __init__():
+
+class FlightControllerInterface:
+
+    def __init__(self):
         pass
 
-    def goto_point(x,y,z):
+    def goto_point(self, x,y,z):
         pass
     
-    def move(x,y,z):
+    def move(self, x,y,z):
     #velocities
         pass
 
-    def land():
+    def land(self):
         pass
 
-    def rotate(angle):
+    def rotate(self,angle):
         pass
     
-    def get_position():
+    def get_position(self):
         pass
         # return position
