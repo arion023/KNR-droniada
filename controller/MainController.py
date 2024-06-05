@@ -77,8 +77,9 @@ def take_pictures_continously():
     
     
     camera_controller_obj = CameraController()
+    camera_controller_obj.take_picture()
     
-    array_pic = camera_controller_obj.take_pictures_continously()
+    # array_pic = camera_controller_obj.take_pictures_continously()
         
         # #działa# patrzy w dół
         # print("kamera patrzy w dół")
@@ -103,9 +104,9 @@ def take_pictures_continously():
 if __name__ == "__main__":
     
     
-    # test_camera_controller()
+    test_camera_controller()
 
-    take_pictures_continously()
+    #take_pictures_continously()
 
 
     
