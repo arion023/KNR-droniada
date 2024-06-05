@@ -64,7 +64,7 @@ class GripperController:
     
         
 
-    def get_distance_claw_sensor(self):
+    def get_distance_claw_sensor(self, print_data=False):
         print("Initialization ranging sensor TMF8x01......", end=" ")
         tof.begin()
         #time.sleep(1)
@@ -79,7 +79,8 @@ class GripperController:
         for i in range(200):
             tof.start_measurement(calib_m=tof.eMODE_CALIB, mode=tof.ePROXIMITY)
             tof.is_data_ready() == True 
-            # print("Distance = %d mm" % tof.get_distance_mm())    
+            if(print_data):
+                print("Distance = %d mm" % tof.get_distance_mm())    
         #while True:    
         #if tof.is_data_ready():    
         return tof.get_distance_mm()
@@ -101,7 +102,7 @@ if __name__ == "__main__":
         time.sleep(2)  # Czekaj 2 sekundy
         gripper.motor_stop()  # Zatrzymaj silnik
         
-        gripper.get_distance_claw_sensor()
+        gripper.get_distance_claw_sensor(print_data=True)
         
     finally:
         GPIO.cleanup()

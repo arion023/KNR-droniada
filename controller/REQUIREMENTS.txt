@@ -7,3 +7,4 @@ pigpio
 opencv-python
 ffmpeg-python
 matplotlib
+pyserial
