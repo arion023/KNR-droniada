@@ -2,6 +2,7 @@ import cv2
 import threading
 from collections import Counter
 import numpy as np
+import os 
 
 # def show_regions_of_interest(image, bounding_boxes, titles=None):
 #     """
@@ -256,8 +257,10 @@ class BallFinder:
         
 if __name__ == '__main__':
     finder = BallFinder()
-    image_path = "foty/01.jpg"
+    image_path = 'images/zdjecie66.jpg'
+    find_colors(image_path)
     finder.process_image(image_path)
+    
     if finder.is_finished:
         print(finder.grid)
         print(finder.grid[2][2]['color'])

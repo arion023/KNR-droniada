@@ -109,5 +109,5 @@ class CameraController:
 if __name__ == "__main__":
     camera_controller_obj = CameraController()
     camera_controller_obj.max_positions_test()
-    camera_controller_obj.take_picture()
+    # camera_controller_obj.take_picture()
     
