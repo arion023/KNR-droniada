@@ -91,10 +91,10 @@ class CameraController:
         # sleep(1)
         self.set_angle(-25)
         # sleep(2)
-    '''
-    STARA METODA BEZ TIMESTAMPU
-    '''
+
     def take_picture(self):
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        img_path = f'pic_at_angle{self.current_angle}_{timestamp}.jpg'
         print(f"Taking picture at angle: {self.current_angle}")
         try:
             stream_url = 'http://localhost:8080/?action=stream'
@@ -106,7 +106,8 @@ class CameraController:
             )
             image_np = np.frombuffer(out, np.uint8)
             image = Image.open(io.BytesIO(image_np))
-            image.save(os.path.join(self.image_folder, f'pic_at_angle{self.current_angle}_.jpg'))
+            image.save(os.path.join(self.image_folder, img_path))
+            return img_path
         except ffmpeg.Error as e:
             print("ffmpeg error:", e.stderr.decode('utf8'))
 
