@@ -1,4 +1,4 @@
 from CV.ball_finder import *
 img_path  = "images/output_33.jpg"
-classify_color(img_path)
+find_colors(img_path)
 
