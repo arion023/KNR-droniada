@@ -1,6 +1,22 @@
 import cv2
 import numpy as np
 
+<<<<<<< HEAD
+=======
+# Zestawy wartości HSV dla różnych obiektów i kolory ramki
+hsv_values = {
+    "Zolta pilka": {"lower": np.array([20, 80, 0]), "upper": np.array([50, 255, 255]), "color": (0, 255, 255)},
+    "Ceglana pilka": {"lower": np.array([40, 40, 50]), "upper": np.array([180, 50, 255]), "color": (0, 0, 255)},  # Czerwony kolor ramki
+    "Niebieska pilka": {"lower": np.array([60, 60, 0]), "upper": np.array([110, 255, 255]), "color": (255, 0, 0)},
+    "Fioletowa pilka": {"lower": np.array([120, 40, 0]), "upper": np.array([160, 255, 255]), "color": (255, 0, 255)},
+    "Biala plachta": {"lower": np.array([0, 0, 180]), "upper": np.array([180, 50, 255]), "color": (0, 0, 255)}
+}
+
+# Wczytanie obrazu z pliku
+image_path = 'images/test_img/czerwona1.jpg'  # Zamień tę ścieżkę na rzeczywistą ścieżkę do obrazu
+frame = cv2.imread(image_path)
+
+>>>>>>> 5cb32f44f05aeceae95a2582fc5419e10670b0d2
 # Funkcje ruchu (przykładowe)
 def move_left():
     print('W lewo')
@@ -45,6 +61,7 @@ def compute_control_command(target, frame_center):
     
     return error_x, error_y
 
+<<<<<<< HEAD
 def process_image(image_path):
     # Zestawy wartości HSV dla różnych obiektów i kolory ramki
     hsv_values = {
@@ -54,6 +71,12 @@ def process_image(image_path):
         "Fioletowa pilka": {"lower": np.array([120, 40, 0]), "upper": np.array([160, 255, 255]), "color": (255, 0, 255)},
         "Biala plachta": {"lower": np.array([0, 0, 180]), "upper": np.array([180, 50, 255]), "color": (0, 0, 255)}
     }
+=======
+# Wczytanie obrazu z plikulower": np.array([0, 0, 180]), "upper": np.array([180, 50, 255]), "color": (0, 0, 255)}
+
+image_path = r'C:\Users\Turlaq\Desktop\test.jpg'  # Zamień tę ścieżkę na rzeczywistą ścieżkę do obrazu
+frame = cv2.imread(image_path)
+>>>>>>> 5cb32f44f05aeceae95a2582fc5419e10670b0d2
 
     # Wczytanie obrazu
     frame = cv2.imread(image_path)
@@ -159,6 +182,7 @@ def process_image(image_path):
         if best_target:
             adjust_rectangle_position(best_target, frame_center)
 
+<<<<<<< HEAD
         # Wyświetlanie zmniejszonego obrazu
         cv2.imshow('Resized Frame', resized_frame)
         cv2.imshow('White Mask', white_mask)
@@ -176,3 +200,7 @@ def process_image(image_path):
 # Wczytanie obrazu z pliku i przetworzenie go
 image_path = r''  # Ścieżka do obrazu
 process_image(image_path)
+=======
+# Zamknięcie wszystkich okien
+cv2.destroyAllWindows()
+>>>>>>> 5cb32f44f05aeceae95a2582fc5419e10670b0d2
