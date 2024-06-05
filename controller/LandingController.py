@@ -3,19 +3,15 @@ import numpy as np
 
 # Zestawy wartości HSV dla różnych obiektów
 hsv_values = {
-<<<<<<< HEAD
-    "Zolta pilka": {"lower": np.array([20, 80, 0]), "upper": np.array([50, 255, 255]), "color": (0, 255, 255)},
-    "Ceglana pilka": {"lower": np.array([40, 40, 50]), "upper": np.array([180, 50, 255]), "color": (0, 0, 255)},  # Czerwony kolor ramki
-    "Niebieska pilka": {"lower": np.array([60, 60, 0]), "upper": np.array([110, 255, 255]), "color": (255, 0, 0)},
-    "Fioletowa pilka": {"lower": np.array([120, 40, 0]), "upper": np.array([160, 255, 255]), "color": (255, 0, 255)},
-    "Biala plachta": {"lower": np.array([0, 0, 180]), "upper": np.array([180, 50, 255]), "color": (0, 0, 255)}
-=======
     "Zolta pilka": {"lower": np.array([0, 100, 190]), "upper": np.array([50, 255, 255])},
     "Ceglana pilka": {"lower": np.array([145, 95, 150]), "upper": np.array([180, 255, 255])},
     "Niebieska pilka": {"lower": np.array([95, 110, 175]), "upper": np.array([150, 255, 230])},
     "Fioletowa pilka": {"lower": np.array([90, 90, 0]), "upper": np.array([130, 255, 255])}
->>>>>>> 3900ed7579983b30392214576366acd1bfa2a47d
 }
+
+# Wczytanie obrazu z pliku
+image_path = 'images/test_img/czerwona1.jpg'  # Zamień tę ścieżkę na rzeczywistą ścieżkę do obrazu
+frame = cv2.imread(image_path)
 
 # Funkcje ruchu (przykładowe)
 def move_left():
@@ -43,15 +39,16 @@ def detect_color(frame, lower_color, upper_color, draw_rectangle):
     for contour in contours:
         x, y, w, h = cv2.boundingRect(contour)
         if draw_rectangle:
-<<<<<<< HEAD
-            cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
-        targets.append((x, y, w, h))
-    return targets, mask
-=======
+
+
+        #         cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
+        #     targets.append((x, y, w, h))
+        # return targets, mask
+
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
         return (x, y, w, h), mask, cv2.contourArea(c)
-    return None, mask, 0
->>>>>>> 3900ed7579983b30392214576366acd1bfa2a47d
+        return None, mask, 0
+
 
 # Funkcja do obliczania komendy sterującej na podstawie błędu
 def compute_control_command(target, frame_center):
@@ -83,13 +80,7 @@ def calculate_gradient(target, frame_center):
     
     return gradient
 
-# Wczytanie obrazu z pliku
-<<<<<<< HEAD
-image_path = r''  # Zamień tę ścieżkę na rzeczywistą ścieżkę do obrazu
-=======
-image_path = r'C:\Users\hyper\OneDrive\Desktop\zdjecia z podlotu\czerwona1.jpg'  # Zamień tę ścieżkę na rzeczywistą ścieżkę do obrazu
->>>>>>> 3900ed7579983b30392214576366acd1bfa2a47d
-frame = cv2.imread(image_path)
+
 
 # Sprawdzenie czy obraz został poprawnie wczytany
 if frame is None:
@@ -116,21 +107,6 @@ def adjust_rectangle_position(target, frame_center):
     error_x = frame_center[0] - target_center_x
     error_y = frame_center[1] - target_center_y
 
-<<<<<<< HEAD
-    # Stałe do regulacji
-    movement_threshold = 30  # Minimalna odległość, aby ruch był wykonywany 
-                             # wartości dla threshold są podawane jako różnica bezwzględna współrzędnych x i y  
-                             # Trzeba wziąć poprawkę na to, że kamera celuje sobą, a nie chwytakiem, czyli przesuwać wychylenie względem osi y o jakąś wartość
-   
-    # Regulacja ruchu wzdłuż osi X
-    if abs(error_x) > movement_threshold:
-        if error_x > 0:
-            move_left()  # Prostokąt przesunięty w prawo zgodnie do zwrotu x
-            print('Przesunięcie w lewo')
-        else:
-            move_right()  # Prostokąt przesunięty przeciwnie do zwrotu x
-            print('Przesunięcie w prawo')
-=======
     # Dynamiczne przeliczanie threshold na podstawie wielkości piłki
     movement_threshold = int((w + h) / 2)  # Przykładowe skalowanie; można dostosować współczynnik
 
@@ -147,24 +123,15 @@ def adjust_rectangle_position(target, frame_center):
         else:
             move_right()
             print('Przesuniecie w prawo')
->>>>>>> 3900ed7579983b30392214576366acd1bfa2a47d
 
     # Regulacja ruchu wzdłuż osi Y
     if abs(error_y) > movement_threshold:
         if error_y > 0:
-<<<<<<< HEAD
-            move_forward()  # Prostokąt przesunięty zgodnie do zwrotu y
-            print('Przesunięcie w przód') 
-        else:
-            move_back()  # Prostokąt przesunięty przeciwnie do zwrotu y
-            print('Przesunięcie do tyłu')
-=======
             move_forward()
             print('Przesuniecie do przodu') 
         else:
             move_back()
             print('Przesuniecie do tyłu')
->>>>>>> 3900ed7579983b30392214576366acd1bfa2a47d
 
 while True:
     # Skalowanie obrazu
@@ -182,31 +149,6 @@ while True:
     best_mask = None
     best_color_name = None
 
-<<<<<<< HEAD
-    for white_target in white_targets:
-        x, y, w, h = white_target
-        white_area_frame = resized_frame[y:y+h, x:x+w]
-
-        # Przeszukiwanie wszystkich zestawów wartości HSV w białych obszarach
-        for color_name, hsv in hsv_values.items():
-            if color_name == "Biala plachta":
-                continue  # Pomijanie detekcji białych obszarów ponownie
-
-            lower_color = hsv["lower"]
-            upper_color = hsv["upper"]
-            color = hsv.get("color", (0, 0, 0))  # Default to black if color is not specified
-            targets, mask = detect_color(white_area_frame, lower_color, upper_color, color, draw_rectangle)
-            
-            for target in targets:
-                tx, ty, tw, th = target
-                area = tw * th
-                if area > best_area:
-                    best_area = area
-                    best_target = (x + tx, y + ty, tw, th)
-                    best_mask = mask
-                    best_color_name = color_name
-                    best_color = color
-=======
     # Przeszukiwanie wszystkich zestawów wartości HSV
     for color_name, hsv in hsv_values.items():
         lower_color = hsv["lower"]
@@ -218,7 +160,6 @@ while True:
             best_target = target
             best_mask = mask
             best_color_name = color_name
->>>>>>> 3900ed7579983b30392214576366acd1bfa2a47d
 
     # Wykonanie regulacji ruchu
     if best_target:
@@ -229,16 +170,11 @@ while True:
     print(f"step: {step}")
 
     # Wyświetlanie zmniejszonego obrazu
-<<<<<<< HEAD
-    cv2.imshow('Resized Frame', resized_frame)
-    cv2.imshow('White Mask', white_mask)
-=======
     if best_color_name:
         cv2.putText(resized_frame, best_color_name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
     cv2.imshow('Resized Frame', resized_frame)
     cv2.imshow('Mask', best_mask)
->>>>>>> 3900ed7579983b30392214576366acd1bfa2a47d
 
     # Oczekiwanie na klawisz i zakończenie pętli w przypadku naciśnięcia klawisza 'q'
     key = cv2.waitKey(1) & 0xFF
@@ -248,4 +184,7 @@ while True:
         draw_rectangle = not draw_rectangle
 
 # Zamknięcie wszystkich okien
-cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    
+    cv2.destroyAllWindows()
