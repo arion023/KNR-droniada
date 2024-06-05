@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Status piłek</title>
+    <title>Drone Mission Plan</title>
     <style>
         .light {
             width: 30px;
@@ -18,40 +18,79 @@
         .red {
             background-color: red;
         }
+        #map {
+            height: 500px;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
     <h1>Lights Status</h1>
     <div>
-        {% for light in lights %}
-            <div class="light {{ 'green' if light else 'red' }}"></div>
-        {% endfor %}
+        <!-- Example of status lights, replace with actual data -->
+        <div class="light green"></div>
+        <div class="light red"></div>
     </div>
 
-<!--mapka-->
-  <h1>Mapa</h1>
+    <h1>Mapa</h1>
     <div id="map"></div>
+
     <script>
+        let map;
+        let dronePath = [];
+        let droneMarker;
+        let droneCoordinates = [
+            // Example coordinates, replace with actual drone data
+            {lat: 37.772, lng: -122.214},
+            {lat: 21.291, lng: -157.821},
+            {lat: -18.142, lng: 178.431},
+            {lat: -27.467, lng: 153.027}
+        ];
+
         function initMap() {
-            var location = {lat: -34.397, lng: 150.644}; // Default coordinates
-            var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 8,
-                center: location
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 16,
+                center: {lat: 0, lng: 0}  // Center the map at the initial coordinates
             });
-            var marker = new google.maps.Marker({
-                position: location,
-                map: map
+            droneMarker = new google.maps.Marker({
+                position: droneCoordinates[0],
+                map: map,
+                title: 'Drone Location'
             });
+            dronePath = new google.maps.Polyline({
+                path: [droneCoordinates[0]],
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
+            dronePath.setMap(map);
         }
+
+        function updateDroneLocation(lat, lng) {
+            const newLocation = {lat: lat, lng: lng};
+            droneMarker.setPosition(newLocation);
+            map.setCenter(newLocation);
+            let path = dronePath.getPath();
+            path.push(newLocation);
+        }
+
+        function simulateDroneMovement() {
+            let index = 1;
+            setInterval(() => {
+                if (index < droneCoordinates.length) {
+                    updateDroneLocation(droneCoordinates[index].lat, droneCoordinates[index].lng);
+                    index++;
+                }
+            }, 1000);
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            initMap();
+            simulateDroneMovement();
+        });
     </script>
 
-<img src="{{ url_for('static', filename='fota.png') }}" alt="Descriptive Alt Text" style="width:100%; max-width:600px;">
-
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg0kiNms8RkZXJEKtVHvEensiMrYIUUi0&callback=initMap">
-    </script>
-
-
-
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
 </body>
 </html>
