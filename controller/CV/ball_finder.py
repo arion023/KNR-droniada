@@ -4,14 +4,17 @@ from collections import Counter
 import numpy as np
 import matplotlib.pyplot as plt
 
-# def show_regions_of_interest(image, bounding_boxes, titles=None):
-    """
-    Extracts and displays multiple regions of interest (ROIs) from the image based on the given list of bounding boxes.
-    
-    Parameters:
-    - image: The input image.
-    - bounding_boxes: A list of tuples where each tuple is (x, y, w, h) representing a bounding box.
-    """
+
+"""
+Extracts and displays multiple regions of interest (ROIs) from the image based on the given list of bounding boxes.
+
+Parameters:
+- image: The input image.
+- bounding_boxes: A list of tuples where each tuple is (x, y, w, h) representing a bounding box.
+"""
+
+def show_regions_of_interest(image, bounding_boxes, titles=None):
+
 
     num_boxes = len(bounding_boxes)
     cols = 3

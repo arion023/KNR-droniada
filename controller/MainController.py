@@ -53,8 +53,15 @@ def test_camera_controller():
     camera_controller_obj.take_picture()
 
 def test_gripper_controller():
-    print("czytanie z czujnika odbiciowego")
     gripper_controller_obj = GripperController()
+    
+    #działa
+    gripper_controller_obj.open_gripper(0.4)
+    time.sleep(2)
+    gripper_controller_obj.close_gripper(0.4)
+    time.sleep(2)
+
+    print("czytanie z czujnika odbiciowego")
     distance_from_sensor = gripper_controller_obj.get_distance_claw_sensor()
     print(distance_from_sensor)
     
@@ -62,9 +69,10 @@ def test_gripper_controller():
 if __name__ == "__main__":
     #działa
     #test ruchu kamery i zrobienia zdjęcia
-    test_camera_controller()
-
     test_gripper_controller()
+    
+    # test_camera_controller()
+
 
 
     
