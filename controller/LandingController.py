@@ -1,5 +1,13 @@
 import cv2
+from time import sleep
 import numpy as np
+from CameraController import CameraController
+from FlightControllerInterface import FlightControllerInterface
+'''
+jest to druga najważniejsza klasa po main controllerze, 
+przejmuje sterowanie od niego podczas schodzenia po piłkę danego koloru wykorzystując feedback z kamery
+i na tej podstawie wydaje rozkazy przez metode FlightControllerIntreface 
+'''
 
 # Zestawy wartości HSV dla różnych obiektów, kolory ramki i priorytety
 hsv_values = {
@@ -9,19 +17,35 @@ hsv_values = {
     "Fioletowa pilka": {"lower": np.array([120, 40, 0]), "upper": np.array([160, 255, 255]), "color": (255, 0, 255), "priority": 2},
     "Biala plachta": {"lower": np.array([0, 0, 180]), "upper": np.array([180, 50, 255]), "color": (0, 0, 255), "priority": 0}  # Niski priorytet, pomocniczy
 }
+def get_vectors_from_pic():
+    pass
 
-# Funkcje ruchu (przykładowe)
-def move_left():
-    print("Przesunięcie w lewo")
 
-def move_right():
-    print("Przesunięcie w prawo")
+# hit mix do lądowania na piłce danego koloru, po wylądowaniu oddaje sterowanie do MainControllera(robi return z funkcji)
+def land_on_ball(ball_colour, multiplyer, descent_speed, delay_betwen_move_and_photo):
+    cameracontroller = CameraController()
+    flight_controller_interface = FlightControllerInterface
+    drone_landed = False
+    barometr_says_we_landed_XD = False
 
-def move_forward():
-    print("Przesunięcie w przód")
+    while not drone_landed:
+        if barometr_says_we_landed_XD: break
+        
+        # z dużej wysokości skanuje aktualne obrazy
+        pic = cameracontroller.take_picture()
+        x, y, size = get_vectors_from_pic(pic, ball_colour)
+        # im większy obiekt jest tym jesteśmy bliżej więc musimy zrobić mniejszy krok 
+        step_size_multipylier = multiplyer/size
+        # mnożymy x i y przez multiplyer
+        x *= step_size_multipylier
+        y *= step_size_multipylier
 
-def move_back():
-    print("Przesunięcie do tyłu")
+        flight_controller_interface.move(x, y, descent_speed)
+        
+        sleep(delay_betwen_move_and_photo)
+
+
+
 
 # Funkcja do wykrywania koloru
 def detect_color(frame, lower_color, upper_color, color, draw_rectangle):

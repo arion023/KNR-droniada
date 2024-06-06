@@ -7,7 +7,7 @@ class FlightControllerInterface:
     def goto_point(self, x,y,z):
         pass
     
-    def move(self, x,y,z):
+    def move(self, x_speed, y_speed, z_speed):
     #velocities
         pass
 

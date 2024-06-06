@@ -20,7 +20,7 @@ def run_mission():
     #zrób fote
     img = camera_controller_obj.take_picture()
     #przetwórz fote otrzymaj pola piłek
-
+    
 
 
     #poleć do piłki 1
