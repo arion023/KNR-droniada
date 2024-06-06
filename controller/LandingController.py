@@ -192,5 +192,9 @@ def process_image(image_path):
     cv2.destroyAllWindows()
 
 
+    if __name__ == "__main__":
+        zmienna = process_image('images/test_img/czerwona1.jpg')
+        print(zmienna)
+    
 
 
