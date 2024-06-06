@@ -10,6 +10,7 @@ class DroneMovement:
         self.interface.move(speed, 0, 0)
         print(f'Move right with speed: {speed}')
 
+<<<<<<< HEAD
     def move_forward(self, speed):
         self.interface.move(0, speed, 0)
         print(f'Move forward with speed: {speed}')
@@ -25,6 +26,14 @@ class DroneMovement:
     def move_down(self, speed):
         self.interface.move(0, 0, -speed)
         print(f'Move down with speed: {speed}')
+=======
+    def goto_point(self, x,y,z):
+        pass
+    
+    def move(self, x_speed, y_speed, z_speed):
+    #velocities
+        pass
+>>>>>>> 300533ffefd2cacd84a63cdabb7e1a53866b5ff5
 
     def land(self):
         self.interface.land()
