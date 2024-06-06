@@ -3,6 +3,7 @@ from time import sleep
 import numpy as np
 from CameraController import CameraController
 from FlightControllerInterface import FlightControllerInterface
+import RecieveTelemetry
 '''
 jest to druga najważniejsza klasa po main controllerze, 
 przejmuje sterowanie od niego podczas schodzenia po piłkę danego koloru wykorzystując feedback z kamery
@@ -23,19 +24,24 @@ def get_vectors_from_pic():
 
 # hit mix do lądowania na piłce danego koloru, po wylądowaniu oddaje sterowanie do MainControllera(robi return z funkcji)
 def land_on_ball(ball_colour, multiplyer, descent_speed, delay_betwen_move_and_photo):
-    cameracontroller = CameraController()
-    flight_controller_interface = FlightControllerInterface
+    
+    camera_controller = CameraController()
+    flight_controller_interface = FlightControllerInterface()
+
+
     drone_landed = False
     barometr_says_we_landed_XD = False
 
     while not drone_landed:
-        if barometr_says_we_landed_XD: break
+        
+        attitude = RecieveTelemetry.getattitude()
+        if attitude <= 0.1: break
         
         # z dużej wysokości skanuje aktualne obrazy
-        pic = cameracontroller.take_picture()
-        x, y, size = get_vectors_from_pic(pic, ball_colour)
+        img = camera_controller.take_picture()
+        x, y, _ = get_direction_from_img(img, ball_colour) # jak zwraca zero to jest poniżej thresholdu
         # im większy obiekt jest tym jesteśmy bliżej więc musimy zrobić mniejszy krok 
-        step_size_multipylier = multiplyer/size
+        step_size_multipylier = multiplyer * attitude
         # mnożymy x i y przez multiplyer
         x *= step_size_multipylier
         y *= step_size_multipylier
@@ -99,7 +105,7 @@ def adjust_rectangle_position(target, frame_center, frame):
 
     return error_x, error_y, w * h  # Zwracamy błędy x i y oraz powierzchnię prostokąta
 
-def move_and_process_image(image_path, target_color):
+def get_direction_from_img(image_path, target_color):
     # Wczytanie obrazu z pliku
     frame = cv2.imread(image_path)
     if frame is None:
@@ -185,4 +191,4 @@ def move_and_process_image(image_path, target_color):
 
 image_path = '' # PATH
 target_color = "" # NAZWA KOLORU: Niebieska; Ceglana; Fioletowa; Zolta + pilka
-move_and_process_image(image_path, target_color)
+get_direction_from_img(image_path, target_color)
