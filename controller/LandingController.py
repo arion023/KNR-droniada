@@ -67,7 +67,7 @@ def detect_color(frame, lower_color, upper_color, color, draw_rectangle):
 # Funkcja do regulacji pozycji prostokąta i rysowania linii
 def adjust_rectangle_position(target, frame_center, frame):
     if target is None:
-        return  # Nie wykryto prostokąta, nie podejmuj żadnych działań
+        return None, None, None  # Nie wykryto prostokąta, zwracamy None dla wszystkich wartości
 
     x, y, w, h = target
     target_center_x = x + w // 2
@@ -97,13 +97,14 @@ def adjust_rectangle_position(target, frame_center, frame):
         else:
             move_back()  # Prostokąt przesunięty przeciwnie do zwrotu y
 
-# Funkcja do przetwarzania obrazu
-def process_image(image_path):
+    return error_x, error_y, w * h  # Zwracamy błędy x i y oraz powierzchnię prostokąta
+
+def move_and_process_image(image_path, target_color):
     # Wczytanie obrazu z pliku
     frame = cv2.imread(image_path)
     if frame is None:
         print(f"Error: Unable to load image at {image_path}")
-        return
+        return None, None, None  # Zwracamy None, jeśli nie można wczytać obrazu
 
     # Zmniejszenie rozmiaru obrazu
     scale_percent = 50  # Skaluje obraz do 50% oryginalnego rozmiaru
@@ -112,6 +113,11 @@ def process_image(image_path):
     dim = (width, height)
     draw_rectangle = False
     
+    # Sprawdzenie, czy wybrany kolor istnieje w słowniku hsv_values
+    if target_color not in hsv_values:
+        print(f"Error: Target color '{target_color}' not found in hsv_values.")
+        return None, None, None
+
     while True:
         # Skalowanie obrazu
         resized_frame = cv2.resize(frame, dim, interpolation=cv2.INTER_AREA)
@@ -128,41 +134,41 @@ def process_image(image_path):
         best_mask = None
         best_color_name = None
         best_color = None
-        highest_priority = -1
 
         for white_target in white_targets:
             x, y, w, h = white_target
             white_area_frame = resized_frame[y:y+h, x:x+w]
 
-            # Przeszukiwanie wszystkich zestawów wartości HSV w białych obszarach
-            for color_name, hsv in hsv_values.items():
-                if color_name == "Biala plachta":
-                    continue  # Pomijanie detekcji białych obszarów ponownie
-
+            # Wykrywanie wybranego koloru
+            if target_color in hsv_values:
+                hsv = hsv_values[target_color]
                 lower_color = hsv["lower"]
                 upper_color = hsv["upper"]
                 color = hsv.get("color", (0, 0, 0))  # Default to black if color is not specified
-                priority = hsv.get("priority", 0)  # Default priority to 0 if not specified
                 targets, mask = detect_color(white_area_frame, lower_color, upper_color, color, draw_rectangle)
                 
                 for target in targets:
                     tx, ty, tw, th = target
                     area = tw * th
-                    if priority > highest_priority or (priority == highest_priority and area > best_area):
+                    if area > best_area:
                         best_area = area
                         best_target = (x + tx, y + ty, tw, th)
                         best_mask = mask
-                        best_color_name = color_name
+                        best_color_name = target_color
                         best_color = color
-                        highest_priority = priority
 
         # Wykonanie regulacji ruchu
-        if best_target:
-            adjust_rectangle_position(best_target, frame_center, resized_frame)
+        error_x, error_y, target_area = adjust_rectangle_position(best_target, frame_center, resized_frame)
 
         # Wyświetlanie zmniejszonego obrazu
         cv2.imshow('Resized Frame', resized_frame)
         cv2.imshow('White Mask', white_mask)
+
+        # Sprawdzenie, czy prostokąt znajduje się w obrębie progu
+        threshold_area = 50  # Definicja progu obszaru
+        if target_area and target_area > threshold_area:
+            print("Znaleziono cel w obrębie progu.")
+            
 
         # Oczekiwanie na klawisz i zakończenie pętli w przypadku naciśnięcia klawisza 'q'
         key = cv2.waitKey(1) & 0xFF
@@ -174,6 +180,9 @@ def process_image(image_path):
     # Zamknięcie wszystkich okien
     cv2.destroyAllWindows()
 
-# Przykładowe wywołanie funkcji
-image_path = 'images/test_img/czerwona1.jpg'  # TU DODAC DEFINICJE PATHA!!!!!!!!!
-process_image(image_path)
+    return error_x, error_y, target_area  # Zwracamy błędy x i y oraz powierzchnię obszaru
+
+
+image_path = '' # PATH
+target_color = "" # NAZWA KOLORU: Niebieska; Ceglana; Fioletowa; Zolta + pilka
+move_and_process_image(image_path, target_color)
