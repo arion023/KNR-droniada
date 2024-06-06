@@ -151,5 +151,5 @@ def process_image(image_path):
     cv2.destroyAllWindows()
 
 # Przykładowe wywołanie funkcji
-image_path = ''  # TU DODAC DEFINICJE PATHA!!!!!!!!!
+image_path = 'images/test_img/czerwona1.jpg'  # TU DODAC DEFINICJE PATHA!!!!!!!!!
 process_image(image_path)

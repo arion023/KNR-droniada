@@ -6,6 +6,8 @@ from CV import BallFinder
 import subprocess
 import time
 from time import sleep
+import requests
+import json
 
 def run_mission():
     camera_controller_obj = CameraController()
@@ -34,6 +36,13 @@ def run_mission():
 
 def find_balls_img(img):
     pass
+
+def send_data_to_flask(data):
+    # metoda wysyłanie danych do serwera
+    url = 'http://127.0.0.1:5000/receive_data'
+    headers = {'Content-Type': 'application/json'}
+    response = requests.post(url, data=json.dumps(data), headers=headers)
+    return response.json()
 
 
 def test_ball_recognition(img):
@@ -104,9 +113,13 @@ def take_pictures_continously():
 if __name__ == "__main__":
     
     
-    test_camera_controller()
+    # test_camera_controller()
 
     #take_pictures_continously()
+
+    status = send_data_to_flask("duuupa")
+    print(status)
+    
 
 
     
