@@ -18,47 +18,89 @@
         .red {
             background-color: red;
         }
+        .blue {
+            background-color: blue;
+        }
+        .purple {
+            background-color: purple;
+        }
+        .brick {
+            background-color: #B22222;
+        }
         #map {
             height: 500px;
             width: 100%;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        #upload-form {
+            margin-bottom: 30px;
+        }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .gallery img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            margin: 10px;
         }
     </style>
 </head>
 <body>
     <h1>Lights Status</h1>
-    <div>
-        <!-- Example of status lights, replace with actual data -->
-        <div class="light green"></div>
-        <div class="light red"></div>
+    <div id="lights-status">
+        {% for light in lights %}
+            <div class="light {% if light %}green{% else %}red{% endif %}"></div>
+        {% endfor %}
     </div>
 
-    <h1>Mapa</h1>
+    <h1>Ball Status</h1>
+    <div id="ball-status">
+        <div id="blue-ball" class="light blue"></div>
+        <div id="red-ball" class="light brick"></div>
+        <div id="purple-ball" class="light purple"></div>
+    </div>
+
+    <h1>Map</h1>
     <div id="map"></div>
 
+    <div class="container">
+        <h1>Upload and Display Images</h1>
+        <form id="upload-form" action="/" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*">
+            <input type="submit" value="Upload">
+        </form>
+
+        <div class="gallery">
+            {% for file in files %}
+                <img src="{{ url_for('static', filename='uploads/' ~ file) }}" alt="Uploaded Image">
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script>
         let map;
-        let dronePath = [];
+        let dronePath;
         let droneMarker;
-        let droneCoordinates = [
-            // Example coordinates, replace with actual drone data
-            {lat: 37.772, lng: -122.214},
-            {lat: 21.291, lng: -157.821},
-            {lat: -18.142, lng: 178.431},
-            {lat: -27.467, lng: 153.027}
-        ];
 
         function initMap() {
             map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 16,
-                center: {lat: 0, lng: 0}  // Center the map at the initial coordinates
+                center: {lat: 50.284833, lng: 18.976528}
             });
             droneMarker = new google.maps.Marker({
-                position: droneCoordinates[0],
+                position: {lat: 50.284833, lng: 18.976528},
                 map: map,
                 title: 'Drone Location'
             });
             dronePath = new google.maps.Polyline({
-                path: [droneCoordinates[0]],
+                path: [{lat: 50.284833, lng: 18.976528}],
                 geodesic: true,
                 strokeColor: '#FF0000',
                 strokeOpacity: 1.0,
@@ -68,29 +110,60 @@
         }
 
         function updateDroneLocation(lat, lng) {
+            console.log(`Updating location to: ${lat}, ${lng}`);
             const newLocation = {lat: lat, lng: lng};
             droneMarker.setPosition(newLocation);
-            map.setCenter(newLocation);
             let path = dronePath.getPath();
             path.push(newLocation);
         }
 
-        function simulateDroneMovement() {
-            let index = 1;
-            setInterval(() => {
-                if (index < droneCoordinates.length) {
-                    updateDroneLocation(droneCoordinates[index].lat, droneCoordinates[index].lng);
-                    index++;
-                }
-            }, 1000);
+        function toggleBallStatus(ballId) {
+            const ball = document.getElementById(ballId);
+            if (ball.classList.contains('green')) {
+                ball.classList.remove('green');
+                ball.classList.add('red');
+            } else {
+                ball.classList.remove('red');
+                ball.classList.add('green');
+            }
         }
 
         document.addEventListener('DOMContentLoaded', (event) => {
             initMap();
-            simulateDroneMovement();
+
+            const socket = io();
+
+            socket.on('drone_coords', function(data) {
+                console.log("Received data:", data);
+                updateDroneLocation(data.lat, data.lng);
+                map.setCenter({lat: data.lat, lng: data.lng});
+            });
+
+            socket.on('connect', function() {
+                console.log("WebSocket is open now.");
+            });
+
+            socket.on('disconnect', function() {
+                console.log("WebSocket is closed now.");
+            });
+
+            socket.on('connect_error', function(error) {
+                console.error(`WebSocket error: ${error}`);
+            });
+
+            // Update ball status every 3 seconds
+            setInterval(() => {
+                toggleBallStatus('blue-ball');
+                setTimeout(() => {
+                    toggleBallStatus('red-ball');
+                    setTimeout(() => {
+                        toggleBallStatus('purple-ball');
+                    }, 3000);
+                }, 3000);
+            }, 9000);
         });
     </script>
 
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA62LJfYEXdTbVSkeCski3RSTuPYynPW8o&callback=initMap"></script>
 </body>
 </html>

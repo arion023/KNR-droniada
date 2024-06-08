@@ -6,7 +6,7 @@ import RPi.GPIO as GPIO
 import time
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 #from DFRobot_TMF8x01 import DFRobot_TMF8801 as tof
-from lib.DFRobot_TMF8x01 import DFRobot_TMF8701 as tof
+#from lib.DFRobot_TMF8x01 import DFRobot_TMF8701 as tof
 from gpiozero import PWMOutputDevice, DigitalOutputDevice
 
 # Zadeklarowanie pinów dla mostka H
@@ -19,7 +19,7 @@ forward = DigitalOutputDevice(pinForward)
 backward = DigitalOutputDevice(pinBackward)
 speed = PWMOutputDevice(pinPWM)
 
-tof = tof(enPin = -1, intPin = -1, bus_id = 1)
+#tof = tof(enPin = -1, intPin = -1, bus_id = 1)
 
 # # Ustawienia pinów
 # pin_pwm = 12  # pin PWM (można zmienić na dowolny obsługujący PWM)
@@ -27,10 +27,10 @@ tof = tof(enPin = -1, intPin = -1, bus_id = 1)
 # pin_in2 = 24  # pin IN2 (można zmienić)
 
 # # Ustawienia GPIO
-# GPIO.setmode(GPIO.BCM)  # Używamy numeracji BCM
-# GPIO.setup(pin_pwm, GPIO.OUT)
-# GPIO.setup(pin_in1, GPIO.OUT)
-# GPIO.setup(pin_in2, GPIO.OUT)
+GPIO.setmode(GPIO.BCM)  # Używamy numeracji BCM
+GPIO.setup(pin_pwm, GPIO.OUT)
+GPIO.setup(pin_in1, GPIO.OUT)
+GPIO.setup(pin_in2, GPIO.OUT)
 
 # # Ustawienia PWM
 # pwm_freq = 1000  # Częstotliwość PWM w Hz
@@ -64,30 +64,6 @@ class GripperController:
     
         
 
-    def get_distance_claw_sensor(self, print_data=False):
-        print("Initialization ranging sensor TMF8x01......", end=" ")
-        tof.begin()
-        #time.sleep(1)
-        # while tof.begin() != 0:
-        #     print("Initialization failed")
-        # print("Initialization done.")
-        
-        # print("Software Version: ", tof.get_software_version())
-        # print("Unique ID: %X" % tof.get_unique_id())
-        # print("Model: ", tof.get_sensor_model())
-        
-        for i in range(200):
-            tof.start_measurement(calib_m=tof.eMODE_CALIB, mode=tof.ePROXIMITY)
-            tof.is_data_ready() == True 
-            if(print_data):
-                print("Distance = %d mm" % tof.get_distance_mm())    
-        #while True:    
-        #if tof.is_data_ready():    
-        return tof.get_distance_mm()
-        
-
-    def test_importu(self):
-        print("test importu")
 
 
 if __name__ == "__main__":

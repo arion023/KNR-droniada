@@ -9,4 +9,6 @@ sudo pigpiod
 
 /snap/bin/mjpg-streamer -i "input_uvc.so -d /dev/video0" -o "output_http.so -w /usr/share/mjpg-streamer/www -p 8080" 2>/dev/null&
 
+cd KNR-droniada/controller/
+
 echo ""
