@@ -1,3 +1,10 @@
+
+
+
+# DZIAŁAJĄCY KOD GRIPPERA JEST W /manual_control
+
+
+
 from time import sleep
 import sys
 
@@ -8,6 +15,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 #from DFRobot_TMF8x01 import DFRobot_TMF8801 as tof
 # from lib.DFRobot_TMF8x01 import DFRobot_TMF8701 as tof
 from gpiozero import PWMOutputDevice, DigitalOutputDevice
+
 
 # Zadeklarowanie pinów dla mostka H
 pinForward = 24  # Pin do przodu (GPIO 17)

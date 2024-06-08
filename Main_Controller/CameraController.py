@@ -9,18 +9,6 @@ import os
 from datetime import datetime
 import ffmpeg
 
-# from ffmpeg import ffmpeg
-
-
-# '''
-# Servo kable:
-#  niebieski GND
-#  czerwony 5V 
-#  zielony na GPIO 18
-
-#  Kamera: USB 
-# '''
-
 Device.pin_factory = PiGPIOFactory()
 
 class CameraController:
@@ -32,47 +20,6 @@ class CameraController:
         self.image_folder = 'images'
         if not os.path.exists(self.image_folder):
             os.makedirs(self.image_folder)
-
-    def go_up(self):
-        if self.current_angle - 0.5 >= self.min_angle:
-            self.current_angle -= 0.5
-        else:
-            self.current_angle = self.min_angle
-        self.camera_controller_obj.angle = self.current_angle
-        print("aktualny kąt:" + str(self.current_angle))
-        self.take_picture()
-        return self.current_angle
-
-    def go_down(self): 
-        if self.current_angle + 0.5 <= self.max_angle:
-            self.current_angle += 0.5
-        else:
-            self.current_angle = self.max_angle
-        self.camera_controller_obj.angle = self.current_angle
-        print("aktualny kąt:" + str(self.current_angle))
-        self.take_picture()
-        return self.current_angle
-
-    def look_down(self): 
-        self.current_angle = 90
-        self.camera_controller_obj.angle = self.current_angle
-        print("aktualny kąt:" + str(self.current_angle))
-        self.take_picture()
-        return self.current_angle
-    
-    def look_down_perpendicular(self): 
-        self.current_angle = 65
-        self.camera_controller_obj.angle = self.current_angle
-        print("aktualny kąt:" + str(self.current_angle))
-        self.take_picture()
-        return self.current_angle
-    
-    def look_up(self): 
-        self.current_angle = -25
-        self.camera_controller_obj.angle = self.current_angle
-        print("aktualny kąt:" + str(self.current_angle))
-        self.take_picture()
-        return self.current_angle
 
     def set_angle(self, x):
         if x < self.min_angle:
@@ -116,53 +63,31 @@ class CameraController:
         
         try:
             stream_url = 'http://localhost:8080/?action=stream'
-            out, _ = (
-                ffmpeg
-                .input(stream_url)
-                .output('pipe:', vframes=1, format='image2', vcodec='mjpeg')
-                .run(capture_stdout=True, capture_stderr=True)
-            )
             i = 0
             while True:
+                out, _ = (
+                    ffmpeg
+                    .input(stream_url)
+                    .output('pipe:', vframes=1, format='image2', vcodec='mjpeg')
+                    .run(capture_stdout=True, capture_stderr=True)
+                )
                 i += 1
                 timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
                 img_path = f'pic_at_angle{self.current_angle}_{timestamp}.jpg'
                 print(f"Taking picture at angle: {self.current_angle}")
-                
 
                 image_np = np.frombuffer(out, np.uint8)
                 image = Image.open(io.BytesIO(image_np))
                 image.save(os.path.join(self.image_folder, img_path))
                 img_array.append(img_path)
                 
-                sleep(1.5)
+                sleep(0.1)
 
             return img_array
         except ffmpeg.Error as e:
             print("ffmpeg error:", e.stderr.decode('utf8'))
 
-
-
-    # def take_picture(self):
-    #     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    #     print(f"Taking picture at angle: {self.current_angle}")
-    #     try:
-    #         stream_url = 'http://localhost:8080/?action=stream'
-    #         out, _ = (
-    #             ffmpeg
-    #             .input(stream_url)
-    #             .output('pipe:', vframes=1, format='image2', vcodec='mjpeg')
-    #             .run(capture_stdout=True, capture_stderr=True)
-    #         )
-    #         image_np = np.frombuffer(out, np.uint8)
-    #         image = Image.open(io.BytesIO(image_np))
-    #         filename = f'pic_at_angle{self.current_angle}_{timestamp}.jpg'
-    #         image.save(os.path.join(self.image_folder, filename))
-    #         print(f"Saved picture as {filename}")
-    #     except ffmpeg.Error as e:
-    #         print("ffmpeg error:", e.stderr.decode('utf8'))
-
 if __name__ == "__main__":
     camera_controller_obj = CameraController()
     camera_controller_obj.max_positions_test()
-    # camera_controller_obj.take_picture()
+    camera_controller_obj.take_pictures_continously()

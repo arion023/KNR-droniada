@@ -12,26 +12,6 @@ import json
 def run_mission():
     camera_controller_obj = CameraController()
     gripper_controller_obj = GripperController()
-    # landing_controller_obj =
-    
-    #take off
-    #poleć do miejsca gdzie zrobi fote
-
-    #zrób fote
-    img = camera_controller_obj.take_picture()
-    #przetwórz fote otrzymaj pola piłek
-    
-
-
-    #poleć do piłki 1
-    #poleć do kubła
-
-    #poleć do piłki 1
-    #poleć do kubła
-
-    #poleć do piłki 1
-    #poleć do kubła
-    
     pass
 
 def find_balls_img(img):
@@ -43,11 +23,6 @@ def send_data_to_flask(data):
     headers = {'Content-Type': 'application/json'}
     response = requests.post(url, data=json.dumps(data), headers=headers)
     return response.json()
-
-
-def test_ball_recognition(img):
-    pass
-
 
 def test_camera_controller():
     # inicjalizacja obiektu

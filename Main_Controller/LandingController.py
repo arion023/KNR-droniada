@@ -5,6 +5,8 @@ from CameraController import CameraController
 from FlightControllerInterface import FlightControllerInterface
 import RecieveTelemetry
 '''
+nie przetestowana w rzeczywistości:(
+
 jest to druga najważniejsza klasa po main controllerze, 
 przejmuje sterowanie od niego podczas schodzenia po piłkę danego koloru wykorzystując feedback z kamery
 i na tej podstawie wydaje rozkazy przez metode FlightControllerIntreface 
